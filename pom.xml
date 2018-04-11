@@ -212,6 +212,12 @@
                         <version>3.0.0</version>
                         <configuration>
                             <encoding>${project.build.sourceEncoding}</encoding>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
+                            <jdkToolchain>
+                                <version>[9, )</version>
+                            </jdkToolchain>
                         </configuration>
                         <executions>
                             <execution>
@@ -353,6 +359,12 @@
                         <version>3.0.0</version>
                         <configuration>
                             <encoding>${project.build.sourceEncoding}</encoding>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
+                            <jdkToolchain>
+                                <version>[9, )</version>
+                            </jdkToolchain>
                         </configuration>
                         <executions>
                             <execution>
