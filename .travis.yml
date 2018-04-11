@@ -16,6 +16,6 @@ before_install:
   - pwd && ls && cd ../../
 before_script:
   - sleep 10
-script: "mvn clean package -P travis --global-toolchains ./toolchains.xml"
+script: "mvn clean package -P travis"
 after_success:
-  - mvn clean test jacoco:report coveralls:report --global-toolchains ./toolchains.xml
+  - mvn clean test jacoco:report coveralls:report
