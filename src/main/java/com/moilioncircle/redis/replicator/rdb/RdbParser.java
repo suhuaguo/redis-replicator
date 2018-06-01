@@ -78,17 +78,23 @@ public class RdbParser {
     /**
      * The RDB E-BNF
      * <p>
-     * RDB        =    'REDIS', $version, [AUX], {SELECTDB, [RESIZEDB], {RECORD}}, '0xFF', [$checksum];
+     * RDB        =    'REDIS', $version, [AUX], [MODULE_AUX], {SELECTDB, [RESIZEDB], {RECORD}}, '0xFF', [$checksum];
      * <p>
-     * RECORD     =    [EXPIRED], KEY, VALUE;
+     * RECORD     =    [EXPIRED], [IDLE | FREQ], KEY, VALUE;
      * <p>
      * SELECTDB   =    '0xFE', $length;
      * <p>
      * AUX        =    {'0xFA', $string, $string};            (*Introduced in rdb version 7*)
      * <p>
+     * MODULE_AUX =    {'0xF7', $length};                     (*Introduced in rdb version 9*)
+     * <p>
      * RESIZEDB   =    '0xFB', $length, $length;              (*Introduced in rdb version 7*)
      * <p>
      * EXPIRED    =    ('0xFD', $second) | ('0xFC', $millisecond);
+     * <p>
+     * IDLE       =    {'0xF8', $value-type};                 (*Introduced in rdb version 9*)
+     * <p>
+     * FREQ       =    {'0xF9', $length};                     (*Introduced in rdb version 9*)
      * <p>
      * KEY        =    $string;
      * <p>
@@ -118,7 +124,9 @@ public class RdbParser {
      * <p>
      * | $hashziplist
      * <p>
-     * | $listquicklist);        (*Introduced in rdb version 7*)
+     * | $listquicklist          (*Introduced in rdb version 7*)
+     * <p>
+     * | $streamlistpacks);      (*Introduced in rdb version 9*)
      * <p>
      *
      * @return read bytes
