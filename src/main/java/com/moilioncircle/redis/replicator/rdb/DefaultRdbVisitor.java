@@ -22,6 +22,7 @@ import com.moilioncircle.redis.replicator.io.ByteArrayInputStream;
 import com.moilioncircle.redis.replicator.io.RedisInputStream;
 import com.moilioncircle.redis.replicator.rdb.datatype.AuxField;
 import com.moilioncircle.redis.replicator.rdb.datatype.DB;
+import com.moilioncircle.redis.replicator.rdb.datatype.EvictType;
 import com.moilioncircle.redis.replicator.rdb.datatype.ExpiredType;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueHash;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueList;
@@ -47,9 +48,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import static com.moilioncircle.redis.replicator.Constants.LRU_CLOCK_MAX;
 import static com.moilioncircle.redis.replicator.Constants.MODULE_SET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_LOAD_NONE;
 import static com.moilioncircle.redis.replicator.Constants.RDB_MODULE_OPCODE_EOF;
+import static com.moilioncircle.redis.replicator.Constants.RDB_OPCODE_FREQ;
+import static com.moilioncircle.redis.replicator.Constants.RDB_OPCODE_IDLE;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_HASH;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_HASH_ZIPLIST;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_HASH_ZIPMAP;
@@ -60,6 +64,7 @@ import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_MODULE;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_MODULE_2;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_SET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_SET_INTSET;
+import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_STREAM_LISTPACKS;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_STRING;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_ZSET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_ZSET_2;
@@ -78,8 +83,15 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     protected final Replicator replicator;
 
+    protected int lruClock;
+
     public DefaultRdbVisitor(final Replicator replicator) {
         this.replicator = replicator;
+    }
+
+    @Override
+    public void applyInit(RedisInputStream in) throws IOException {
+        this.lruClock = (int)((System.currentTimeMillis() / 1000) & LRU_CLOCK_MAX);
     }
 
     @Override
@@ -128,6 +140,46 @@ public class DefaultRdbVisitor extends RdbVisitor {
     }
 
     @Override
+    public Event applyAux(RedisInputStream in, int version) throws IOException {
+        BaseRdbParser parser = new BaseRdbParser(in);
+        String auxKey = new String(parser.rdbLoadEncodedStringObject().first(), UTF_8);
+        String auxValue = new String(parser.rdbLoadEncodedStringObject().first(), UTF_8);
+        if (!auxKey.startsWith("%")) {
+            if (logger.isInfoEnabled()) {
+                logger.info("RDB {}: {}", auxKey, auxValue);
+            }
+            if (auxKey.equals("repl-id")) replicator.getConfiguration().setReplId(auxValue);
+            if (auxKey.equals("repl-offset")) replicator.getConfiguration().setReplOffset(parseLong(auxValue));
+            if (auxKey.equals("repl-stream-db")) replicator.getConfiguration().setReplStreamDB(parseInt(auxValue));
+            return new AuxField(auxKey, auxValue);
+        } else {
+            if (logger.isWarnEnabled()) {
+                logger.warn("unrecognized RDB AUX field: {}, value: {}", auxKey, auxValue);
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public Event applyModuleAux(RedisInputStream in, int version) throws IOException {
+        BaseRdbParser parser = new BaseRdbParser(in);
+        char[] c = new char[9];
+        long moduleid = parser.rdbLoadLen().len;
+        for (int i = 0; i < c.length; i++) {
+            c[i] = MODULE_SET[(int) (moduleid >>> (10 + (c.length - 1 - i) * 6) & 63)];
+        }
+        String moduleName = new String(c);
+        int moduleVersion = (int) (moduleid & 1023);
+        ModuleParser<? extends Module> moduleParser = lookupModuleParser(moduleName, moduleVersion);
+        if (moduleParser == null) {
+            logger.warn("The RDB file contains AUX module data I can't load: no matching module '{}'", moduleName);
+        } else {
+            logger.warn("The RDB file contains AUX module data I can't load for the module '{}'. Probably you want to use a newer version of Redis which implements aux data callbacks", moduleName);
+        }
+        return null;
+    }
+
+    @Override
     public long applyEof(RedisInputStream in, int version) throws IOException {
         /*
          * ----------------------------
@@ -152,8 +204,15 @@ public class DefaultRdbVisitor extends RdbVisitor {
          */
         BaseRdbParser parser = new BaseRdbParser(in);
         int expiredSec = parser.rdbLoadTime();
-        int valueType = applyType(in);
-        KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
+        int type = applyType(in);
+        KeyValuePair<?> kv;
+        if (type == RDB_OPCODE_FREQ) {
+            kv = (KeyValuePair<?>) applyFreq(in, db, version);
+        } else if (type == RDB_OPCODE_IDLE) {
+            kv = (KeyValuePair<?>) applyIdle(in, db, version);
+        } else {
+            kv = rdbLoadObject(in, db, type, version);
+        }
         kv.setExpiredType(ExpiredType.SECOND);
         kv.setExpiredValue((long) expiredSec);
         return kv;
@@ -171,32 +230,42 @@ public class DefaultRdbVisitor extends RdbVisitor {
          */
         BaseRdbParser parser = new BaseRdbParser(in);
         long expiredMs = parser.rdbLoadMillisecondTime();
-        int valueType = applyType(in);
-        KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
+        int type = applyType(in);
+        KeyValuePair<?> kv;
+        if (type == RDB_OPCODE_FREQ) {
+            kv = (KeyValuePair<?>) applyFreq(in, db, version);
+        } else if (type == RDB_OPCODE_IDLE) {
+            kv = (KeyValuePair<?>) applyIdle(in, db, version);
+        } else {
+            kv = rdbLoadObject(in, db, type, version);
+        }
         kv.setExpiredType(ExpiredType.MS);
         kv.setExpiredValue(expiredMs);
         return kv;
     }
 
     @Override
-    public Event applyAux(RedisInputStream in, int version) throws IOException {
+    public Event applyFreq(RedisInputStream in, DB db, int version) throws IOException {
         BaseRdbParser parser = new BaseRdbParser(in);
-        String auxKey = new String(parser.rdbLoadEncodedStringObject().first(), UTF_8);
-        String auxValue = new String(parser.rdbLoadEncodedStringObject().first(), UTF_8);
-        if (!auxKey.startsWith("%")) {
-            if (logger.isInfoEnabled()) {
-                logger.info("RDB {}: {}", auxKey, auxValue);
-            }
-            if (auxKey.equals("repl-id")) replicator.getConfiguration().setReplId(auxValue);
-            if (auxKey.equals("repl-offset")) replicator.getConfiguration().setReplOffset(parseLong(auxValue));
-            if (auxKey.equals("repl-stream-db")) replicator.getConfiguration().setReplStreamDB(parseInt(auxValue));
-            return new AuxField(auxKey, auxValue);
-        } else {
-            if (logger.isWarnEnabled()) {
-                logger.warn("unrecognized RDB AUX field: {}, value: {}", auxKey, auxValue);
-            }
-            return null;
-        }
+        byte lfuFreq = (byte)in.read();
+        int valueType = applyType(in);
+        KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
+        kv.setEvictType(EvictType.LFU);
+        kv.setEvictValue(((int)parser.lfuGetTimeInMinutes() << 8) | lfuFreq);
+        return kv;
+    }
+
+    @Override
+    public Event applyIdle(RedisInputStream in, DB db, int version) throws IOException {
+        BaseRdbParser parser = new BaseRdbParser(in);
+        long lruIdle = parser.rdbLoadLen().len;
+        int valueType = applyType(in);
+        KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
+        kv.setEvictType(EvictType.LRU);
+        lruIdle = lruClock - (lruIdle * 1000 / 1000 /* truncate to second*/);
+        if (lruIdle < 0) lruIdle = lruClock + 1; // if overflow
+        kv.setEvictValue((int)lruIdle);
+        return kv;
     }
 
     @Override
@@ -609,14 +678,6 @@ public class DefaultRdbVisitor extends RdbVisitor {
         return o6;
     }
 
-    /**
-     * @param in      input stream
-     * @param db      redis db
-     * @param version rdb version
-     * @return module object
-     * @throws IOException IOException
-     * @since 2.3.0
-     */
     @Override
     public Event applyModule2(RedisInputStream in, DB db, int version) throws IOException {
         //|6|6|6|6|6|6|6|6|6|10|
@@ -650,6 +711,10 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     protected ModuleParser<? extends Module> lookupModuleParser(String moduleName, int moduleVersion) {
         return replicator.getModuleParser(moduleName, moduleVersion);
+    }
+
+    public Event applyStreamListPacks(RedisInputStream in, DB db, int version) throws IOException {
+        throw new UnsupportedOperationException("must implement this method.");
     }
 
     protected KeyValuePair<?> rdbLoadObject(RedisInputStream in, DB db, int valueType, int version) throws IOException {
@@ -689,6 +754,8 @@ public class DefaultRdbVisitor extends RdbVisitor {
                 return (KeyValuePair<?>) applyModule(in, db, version);
             case RDB_TYPE_MODULE_2:
                 return (KeyValuePair<?>) applyModule2(in, db, version);
+            case RDB_TYPE_STREAM_LISTPACKS:
+                return (KeyValuePair<?>) applyStreamListPacks(in, db, version);
             default:
                 throw new AssertionError("unexpected value type:" + valueType);
         }

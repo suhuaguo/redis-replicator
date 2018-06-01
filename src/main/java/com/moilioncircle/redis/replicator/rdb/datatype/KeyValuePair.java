@@ -35,6 +35,8 @@ public class KeyValuePair<T> implements Event {
     protected int valueRdbType;
     protected ExpiredType expiredType = ExpiredType.NONE;
     protected Long expiredValue;
+    protected EvictType evictType = EvictType.NONE;
+    protected Integer evictValue;
     protected String key;
     protected T value;
     protected byte[] rawKey;
@@ -61,6 +63,22 @@ public class KeyValuePair<T> implements Event {
 
     public void setExpiredValue(Long expiredValue) {
         this.expiredValue = expiredValue;
+    }
+
+    public EvictType getEvictType() {
+        return evictType;
+    }
+
+    public void setEvictType(EvictType evictType) {
+        this.evictType = evictType;
+    }
+
+    public Integer getEvictValue() {
+        return evictValue;
+    }
+
+    public void setEvictValue(Integer evictValue) {
+        this.evictValue = evictValue;
     }
 
     public String getKey() {

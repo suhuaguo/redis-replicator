@@ -63,12 +63,15 @@ public class Constants {
     /**
      * rdb protocol
      */
-    public static final int RDB_OPCODE_AUX = 0xfa; /*250*/
-    public static final int RDB_OPCODE_RESIZEDB = 0xfb; /*251*/
-    public static final int RDB_OPCODE_EXPIRETIME_MS = 0xfc;/* 252 */
-    public static final int RDB_OPCODE_EXPIRETIME = 0xfd; /* 253 */
-    public static final int RDB_OPCODE_SELECTDB = 0xfe; /* 254 */
-    public static final int RDB_OPCODE_EOF = 0xff; /* 255 */
+    public static final int RDB_OPCODE_MODULE_AUX = 247;
+    public static final int RDB_OPCODE_IDLE = 248;
+    public static final int RDB_OPCODE_FREQ = 249;
+    public static final int RDB_OPCODE_AUX = 250;
+    public static final int RDB_OPCODE_RESIZEDB = 251;
+    public static final int RDB_OPCODE_EXPIRETIME_MS = 252;
+    public static final int RDB_OPCODE_EXPIRETIME = 253;
+    public static final int RDB_OPCODE_SELECTDB = 254;
+    public static final int RDB_OPCODE_EOF = 255;
 
     /**
      * rdb object encoding
@@ -87,6 +90,7 @@ public class Constants {
     public static final int RDB_TYPE_ZSET_ZIPLIST = 12;
     public static final int RDB_TYPE_HASH_ZIPLIST = 13;
     public static final int RDB_TYPE_LIST_QUICKLIST = 14;
+    public static final int RDB_TYPE_STREAM_LISTPACKS = 15;
 
     /**
      * Module serialized values sub opcodes
@@ -98,6 +102,11 @@ public class Constants {
     public static final int RDB_MODULE_OPCODE_FLOAT = 3; /* Float. */
     public static final int RDB_MODULE_OPCODE_DOUBLE = 4; /* Double. */
     public static final int RDB_MODULE_OPCODE_STRING = 5; /* String. */
+
+    /**
+     * LRU
+     */
+    public static final int LRU_CLOCK_MAX = ((1<<24)-1);
 
     /**
      * zip entry

@@ -270,6 +270,14 @@ public class BaseRdbParser {
     }
 
     /**
+     * @return Return the current time in minutes. The returned time is suitable to be stored as LDT
+     * @since 2.6.0
+     */
+    public long lfuGetTimeInMinutes() {
+        return (System.currentTimeMillis() / 60000) & 65535;
+    }
+
+    /**
      * @see #rdbLoadLen
      */
     public static class Len {
