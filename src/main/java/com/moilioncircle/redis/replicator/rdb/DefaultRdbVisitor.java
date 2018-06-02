@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static com.moilioncircle.redis.replicator.Constants.LRU_CLOCK_MAX;
 import static com.moilioncircle.redis.replicator.Constants.MODULE_SET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_LOAD_NONE;
 import static com.moilioncircle.redis.replicator.Constants.RDB_MODULE_OPCODE_EOF;
@@ -83,15 +82,8 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     protected final Replicator replicator;
 
-    protected int lruClock;
-
     public DefaultRdbVisitor(final Replicator replicator) {
         this.replicator = replicator;
-    }
-
-    @Override
-    public void applyInit(RedisInputStream in) throws IOException {
-        this.lruClock = (int)((System.currentTimeMillis() / 1000) & LRU_CLOCK_MAX);
     }
 
     @Override
@@ -246,12 +238,11 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     @Override
     public Event applyFreq(RedisInputStream in, DB db, int version) throws IOException {
-        BaseRdbParser parser = new BaseRdbParser(in);
-        byte lfuFreq = (byte)in.read();
+        long lfuFreq = in.read();
         int valueType = applyType(in);
         KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
         kv.setEvictType(EvictType.LFU);
-        kv.setEvictValue(((int)parser.lfuGetTimeInMinutes() << 8) | lfuFreq);
+        kv.setEvictValue(lfuFreq);
         return kv;
     }
 
@@ -262,9 +253,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         int valueType = applyType(in);
         KeyValuePair<?> kv = rdbLoadObject(in, db, valueType, version);
         kv.setEvictType(EvictType.LRU);
-        lruIdle = lruClock - (lruIdle * 1000 / 1000 /* truncate to second*/);
-        if (lruIdle < 0) lruIdle = lruClock + 1; // if overflow
-        kv.setEvictValue((int)lruIdle);
+        kv.setEvictValue(lruIdle);
         return kv;
     }
 

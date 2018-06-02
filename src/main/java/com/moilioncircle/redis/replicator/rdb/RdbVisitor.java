@@ -28,15 +28,6 @@ import java.io.IOException;
  */
 public abstract class RdbVisitor {
 
-    /**
-     * @param in      input stream
-     * @throws IOException IOException
-     * @since 2.6.0
-     */
-    public void applyInit(RedisInputStream in) throws IOException {
-        throw new UnsupportedOperationException("must implement this method.");
-    }
-
     /*
      * rdb prefix
      */

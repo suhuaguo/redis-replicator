@@ -36,7 +36,7 @@ public class KeyValuePair<T> implements Event {
     protected ExpiredType expiredType = ExpiredType.NONE;
     protected Long expiredValue;
     protected EvictType evictType = EvictType.NONE;
-    protected Integer evictValue;
+    protected Long evictValue;
     protected String key;
     protected T value;
     protected byte[] rawKey;
@@ -73,11 +73,11 @@ public class KeyValuePair<T> implements Event {
         this.evictType = evictType;
     }
 
-    public Integer getEvictValue() {
+    public Long getEvictValue() {
         return evictValue;
     }
 
-    public void setEvictValue(Integer evictValue) {
+    public void setEvictValue(Long evictValue) {
         this.evictValue = evictValue;
     }
 

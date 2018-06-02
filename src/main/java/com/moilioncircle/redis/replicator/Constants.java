@@ -104,11 +104,6 @@ public class Constants {
     public static final int RDB_MODULE_OPCODE_STRING = 5; /* String. */
 
     /**
-     * LRU
-     */
-    public static final int LRU_CLOCK_MAX = ((1<<24)-1);
-
-    /**
      * zip entry
      */
     public static final int ZIP_INT_8B = 0xfe; /*11111110*/

@@ -140,7 +140,6 @@ public class RdbParser {
          * ----------------------------
          */
         this.replicator.submitEvent(new PreFullSyncEvent());
-        rdbVisitor.applyInit(in);
         rdbVisitor.applyMagic(in);
         int version = rdbVisitor.applyVersion(in);
         DB db = null;

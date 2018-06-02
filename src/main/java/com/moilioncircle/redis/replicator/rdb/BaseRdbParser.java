@@ -268,15 +268,7 @@ public class BaseRdbParser {
     public float rdbLoadBinaryFloatValue() throws IOException {
         return Float.intBitsToFloat(in.readInt(4));
     }
-
-    /**
-     * @return Return the current time in minutes. The returned time is suitable to be stored as LDT
-     * @since 2.6.0
-     */
-    public long lfuGetTimeInMinutes() {
-        return (System.currentTimeMillis() / 60000) & 65535;
-    }
-
+    
     /**
      * @see #rdbLoadLen
      */
