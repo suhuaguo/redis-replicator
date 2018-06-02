@@ -29,6 +29,8 @@ import java.util.NoSuchElementException;
 
 import static com.moilioncircle.redis.replicator.Constants.MODULE_SET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_MODULE_OPCODE_EOF;
+import static com.moilioncircle.redis.replicator.Constants.RDB_OPCODE_FREQ;
+import static com.moilioncircle.redis.replicator.Constants.RDB_OPCODE_IDLE;
 
 /**
  * @author Leon Chen
@@ -59,15 +61,44 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
     public Event applyExpireTime(RedisInputStream in, DB db, int version) throws IOException {
         SkipRdbParser parser = new SkipRdbParser(in);
         parser.rdbLoadTime();
-        int valueType = applyType(in);
-        rdbLoadObject(in, db, valueType, version);
+        int type = applyType(in);
+        if (type == RDB_OPCODE_FREQ) {
+            applyFreq(in, db, version);
+        } else if (type == RDB_OPCODE_IDLE) {
+            applyIdle(in, db, version);
+        } else {
+            rdbLoadObject(in, db, type, version);
+        }
         return null;
     }
-
+    
     @Override
     public Event applyExpireTimeMs(RedisInputStream in, DB db, int version) throws IOException {
         SkipRdbParser parser = new SkipRdbParser(in);
         parser.rdbLoadMillisecondTime();
+        int type = applyType(in);
+        if (type == RDB_OPCODE_FREQ) {
+            applyFreq(in, db, version);
+        } else if (type == RDB_OPCODE_IDLE) {
+            applyIdle(in, db, version);
+        } else {
+            rdbLoadObject(in, db, type, version);
+        }
+        return null;
+    }
+    
+    @Override
+    public Event applyFreq(RedisInputStream in, DB db, int version) throws IOException {
+        in.read();
+        int valueType = applyType(in);
+        rdbLoadObject(in, db, valueType, version);
+        return null;
+    }
+    
+    @Override
+    public Event applyIdle(RedisInputStream in, DB db, int version) throws IOException {
+        SkipRdbParser parser = new SkipRdbParser(in);
+        parser.rdbLoadLen();
         int valueType = applyType(in);
         rdbLoadObject(in, db, valueType, version);
         return null;
@@ -78,6 +109,13 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         SkipRdbParser parser = new SkipRdbParser(in);
         parser.rdbLoadEncodedStringObject();
         parser.rdbLoadEncodedStringObject();
+        return null;
+    }
+    
+    @Override
+    public Event applyModuleAux(RedisInputStream in, int version) throws IOException {
+        SkipRdbParser parser = new SkipRdbParser(in);
+        parser.rdbLoadLen();
         return null;
     }
 
