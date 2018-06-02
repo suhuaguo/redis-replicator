@@ -88,6 +88,8 @@ import com.moilioncircle.redis.replicator.cmd.parser.UnLinkParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZAddParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZIncrByParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZInterStoreParser;
+import com.moilioncircle.redis.replicator.cmd.parser.ZPopMaxParser;
+import com.moilioncircle.redis.replicator.cmd.parser.ZPopMinParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZRemParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZRemRangeByLexParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZRemRangeByRankParser;
@@ -279,6 +281,8 @@ public abstract class AbstractReplicator extends AbstractReplicatorListener impl
         addCommandParser(CommandName.name("LTRIM"), new LTrimParser());
         addCommandParser(CommandName.name("SORT"), new SortParser());
         addCommandParser(CommandName.name("RPOPLPUSH"), new RPopLPushParser());
+        addCommandParser(CommandName.name("ZPOPMIN"), new ZPopMinParser());
+        addCommandParser(CommandName.name("ZPOPMAX"), new ZPopMaxParser());
     }
 
     @Override
