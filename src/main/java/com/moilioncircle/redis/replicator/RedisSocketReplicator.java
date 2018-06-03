@@ -411,14 +411,9 @@ public class RedisSocketReplicator extends AbstractReplicator {
                     }
                     Command command = parser.parse(raw);
                     if (command instanceof PingCommand) {
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendQuietly("PONG".getBytes());
-                            }
-                        });
+                        // NOP
                     } else if (command instanceof ReplConfGetAckCommand) {
-                        executor.execute(new Runnable() {
+                        if (mode == PSYNC) executor.execute(new Runnable() {
                             @Override
                             public void run() {
                                 sendQuietly("REPLCONF".getBytes(), "ACK".getBytes(), String.valueOf(configuration.getReplOffset()).getBytes());
