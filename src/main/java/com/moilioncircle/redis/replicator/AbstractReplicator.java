@@ -68,6 +68,7 @@ import com.moilioncircle.redis.replicator.cmd.parser.RPushParser;
 import com.moilioncircle.redis.replicator.cmd.parser.RPushXParser;
 import com.moilioncircle.redis.replicator.cmd.parser.RenameNxParser;
 import com.moilioncircle.redis.replicator.cmd.parser.RenameParser;
+import com.moilioncircle.redis.replicator.cmd.parser.ReplConfParser;
 import com.moilioncircle.redis.replicator.cmd.parser.RestoreParser;
 import com.moilioncircle.redis.replicator.cmd.parser.SAddParser;
 import com.moilioncircle.redis.replicator.cmd.parser.SDiffStoreParser;
@@ -283,6 +284,7 @@ public abstract class AbstractReplicator extends AbstractReplicatorListener impl
         addCommandParser(CommandName.name("RPOPLPUSH"), new RPopLPushParser());
         addCommandParser(CommandName.name("ZPOPMIN"), new ZPopMinParser());
         addCommandParser(CommandName.name("ZPOPMAX"), new ZPopMaxParser());
+        addCommandParser(CommandName.name("REPLCONF"), new ReplConfParser());
     }
 
     @Override
