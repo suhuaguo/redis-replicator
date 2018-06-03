@@ -21,7 +21,9 @@ import com.moilioncircle.redis.replicator.cmd.CommandListener;
 import com.moilioncircle.redis.replicator.cmd.CommandName;
 import com.moilioncircle.redis.replicator.cmd.impl.SetCommand;
 import com.moilioncircle.redis.replicator.rdb.AuxFieldListener;
+import com.moilioncircle.redis.replicator.rdb.RdbListener;
 import com.moilioncircle.redis.replicator.rdb.datatype.AuxField;
+import com.moilioncircle.redis.replicator.rdb.datatype.KeyValuePair;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
@@ -54,7 +56,6 @@ public class PsyncTest {
                 setHeartBeatPeriod(200).
                 setReceiveBufferSize(0).
                 setSendBufferSize(0).
-                setDiscardRdbEvent(true).
                 setRetryTimeInterval(1000).
                 setUseDefaultExceptionListener(false);
         System.out.println(configuration);
@@ -68,16 +69,31 @@ public class PsyncTest {
                 set.add(auxField);
             }
         });
-        final AtomicInteger acc = new AtomicInteger();
-        replicator.addCommandListener(new CommandListener() {
+        replicator.addRdbListener(new RdbListener() {
             @Override
-            public void handle(Replicator replicator, Command command) {
+            public void preFullSync(Replicator replicator) {
+        
+            }
+    
+            @Override
+            public void handle(Replicator replicator, KeyValuePair<?> kv) {
+        
+            }
+    
+            @Override
+            public void postFullSync(Replicator replicator, long checksum) {
                 if (flag.compareAndSet(false, true)) {
                     Thread thread = new Thread(new JRun());
                     thread.setDaemon(true);
                     thread.start();
                     replicator.removeCommandParser(CommandName.name("PING"));
                 }
+            }
+        });
+        final AtomicInteger acc = new AtomicInteger();
+        replicator.addCommandListener(new CommandListener() {
+            @Override
+            public void handle(Replicator replicator, Command command) {
                 if (command instanceof SetCommand && ((SetCommand) command).getKey().startsWith("psync")) {
                     SetCommand setCommand = (SetCommand) command;
                     Integer.parseInt(setCommand.getKey().split(" ")[1]); // num
