@@ -26,14 +26,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class CommandParsers {
 
-    public static String objToString(Object object) {
-        if (object == null) return null;
-        byte[] bytes = (byte[]) object;
-        return new String(bytes, UTF_8);
-    }
-
     public static byte[] objToBytes(Object object) {
         return (byte[]) object;
+    }
+    
+    public static String objToString(Object object) {
+        if (object == null) return null;
+        return new String(objToBytes(object), UTF_8);
     }
     
     public static int objToInt(Object object) {
