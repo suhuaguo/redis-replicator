@@ -255,7 +255,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
                 sendQuietly("REPLCONF".getBytes(), "ACK".getBytes(), String.valueOf(configuration.getReplOffset()).getBytes());
             }
         }, configuration.getHeartBeatPeriod(), configuration.getHeartBeatPeriod(), TimeUnit.MILLISECONDS);
-        logger.info("heartbeat thread started.");
+        logger.info("heartbeat started.");
     }
     
     protected void sendQuietly(byte[] command) {
@@ -331,6 +331,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
         try {
             if (heartbeat != null) {
                 if (!heartbeat.isCancelled()) heartbeat.cancel(true);
+                logger.info("heartbeat canceled.");
             }
 
             try {
