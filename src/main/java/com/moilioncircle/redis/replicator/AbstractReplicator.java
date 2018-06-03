@@ -86,6 +86,12 @@ import com.moilioncircle.redis.replicator.cmd.parser.SetRangeParser;
 import com.moilioncircle.redis.replicator.cmd.parser.SortParser;
 import com.moilioncircle.redis.replicator.cmd.parser.SwapDBParser;
 import com.moilioncircle.redis.replicator.cmd.parser.UnLinkParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XAckParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XAddParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XClaimParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XDelParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XGroupParser;
+import com.moilioncircle.redis.replicator.cmd.parser.XTrimParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZAddParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZIncrByParser;
 import com.moilioncircle.redis.replicator.cmd.parser.ZInterStoreParser;
@@ -285,6 +291,12 @@ public abstract class AbstractReplicator extends AbstractReplicatorListener impl
         addCommandParser(CommandName.name("ZPOPMIN"), new ZPopMinParser());
         addCommandParser(CommandName.name("ZPOPMAX"), new ZPopMaxParser());
         addCommandParser(CommandName.name("REPLCONF"), new ReplConfParser());
+        addCommandParser(CommandName.name("XACK"), new XAckParser());
+        addCommandParser(CommandName.name("XADD"), new XAddParser());
+        addCommandParser(CommandName.name("XCLAIM"), new XClaimParser());
+        addCommandParser(CommandName.name("XDEL"), new XDelParser());
+        addCommandParser(CommandName.name("XGROUP"), new XGroupParser());
+        addCommandParser(CommandName.name("XTRIM"), new XTrimParser());
     }
 
     @Override

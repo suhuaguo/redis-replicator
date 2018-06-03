@@ -16,9 +16,16 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.XTrimCommand;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XTrimParser {
+public class XTrimParser implements CommandParser<XTrimCommand> {
+	@Override
+	public XTrimCommand parse(Object[] command) {
+		return new XTrimCommand();
+	}
 }

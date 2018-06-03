@@ -16,9 +16,16 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.XDelCommand;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XDelParser {
+public class XDelParser implements CommandParser<XDelCommand> {
+	@Override
+	public XDelCommand parse(Object[] command) {
+		return new XDelCommand();
+	}
 }

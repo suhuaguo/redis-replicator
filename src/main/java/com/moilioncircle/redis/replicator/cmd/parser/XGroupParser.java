@@ -16,9 +16,17 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.XGroupCommand;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XGroupParser {
+public class XGroupParser implements CommandParser<XGroupCommand> {
+	@Override
+	public XGroupCommand parse(Object[] command) {
+		return new XGroupCommand() {
+		};
+	}
 }

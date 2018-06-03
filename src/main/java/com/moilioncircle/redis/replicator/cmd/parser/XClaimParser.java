@@ -16,9 +16,16 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.XClaimCommand;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XClaimParser {
+public class XClaimParser implements CommandParser<XClaimCommand> {
+	@Override
+	public XClaimCommand parse(Object[] command) {
+		return new XClaimCommand();
+	}
 }

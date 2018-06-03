@@ -16,9 +16,13 @@
 
 package com.moilioncircle.redis.replicator.cmd.impl;
 
+import com.moilioncircle.redis.replicator.cmd.Command;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XAddCommand {
+public class XAddCommand implements Command {
+	
+	private static final long serialVersionUID = 1L;
 }

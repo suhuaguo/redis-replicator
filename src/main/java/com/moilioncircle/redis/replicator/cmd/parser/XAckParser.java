@@ -16,9 +16,16 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.XAckCommand;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XAckParser {
+public class XAckParser implements CommandParser<XAckCommand> {
+	@Override
+	public XAckCommand parse(Object[] command) {
+		return new XAckCommand();
+	}
 }
