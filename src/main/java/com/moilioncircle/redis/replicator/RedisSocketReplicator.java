@@ -64,10 +64,10 @@ public class RedisSocketReplicator extends AbstractReplicator {
 
     protected final int port;
     protected final String host;
-    protected volatile Socket socket;
-    protected volatile ReplyParser replyParser;
-    protected volatile ScheduledFuture<?> heartbeat;
-    protected volatile RedisOutputStream outputStream;
+    protected Socket socket;
+    protected ReplyParser replyParser;
+    protected ScheduledFuture<?> heartbeat;
+    protected RedisOutputStream outputStream;
     protected final RedisSocketFactory socketFactory;
     protected ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -257,18 +257,6 @@ public class RedisSocketReplicator extends AbstractReplicator {
         }, configuration.getHeartBeatPeriod(), configuration.getHeartBeatPeriod(), TimeUnit.MILLISECONDS);
         logger.info("heartbeat started.");
     }
-    
-    protected void sendQuietly(byte[] command) {
-        sendQuietly(command, new byte[0][]);
-    }
-    
-    protected void sendQuietly(byte[] command, final byte[]... args) {
-        try {
-            send(command, args);
-        } catch (IOException e) {
-            //NOP
-        }
-    }
 
     protected void send(byte[] command) throws IOException {
         send(command, new byte[0][]);
@@ -291,6 +279,14 @@ public class RedisSocketReplicator extends AbstractReplicator {
             outputStream.writeCrLf();
         }
         outputStream.flush();
+    }
+    
+    protected void sendQuietly(byte[] command, final byte[]... args) {
+        try {
+            send(command, args);
+        } catch (IOException e) {
+            //NOP
+        }
     }
 
     @SuppressWarnings("unchecked")

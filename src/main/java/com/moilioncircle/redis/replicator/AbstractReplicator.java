@@ -124,7 +124,7 @@ import static com.moilioncircle.redis.replicator.Status.DISCONNECTING;
  */
 public abstract class AbstractReplicator extends AbstractReplicatorListener implements Replicator {
     protected Configuration configuration;
-    protected volatile RedisInputStream inputStream;
+    protected RedisInputStream inputStream;
     protected RdbVisitor rdbVisitor = new DefaultRdbVisitor(this);
     protected final AtomicReference<Status> connected = new AtomicReference<>(DISCONNECTED);
     protected final Map<ModuleKey, ModuleParser<? extends Module>> modules = new ConcurrentHashMap<>();
