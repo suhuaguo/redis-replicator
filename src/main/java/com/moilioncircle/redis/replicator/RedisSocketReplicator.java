@@ -99,7 +99,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
             doCloseListener(this);
             if (!this.executor.isShutdown()) this.executor.shutdown();
             try {
-                this.executor.awaitTermination(30, TimeUnit.SECONDS);
+                this.executor.awaitTermination(configuration.getConnectionTimeout(), TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
