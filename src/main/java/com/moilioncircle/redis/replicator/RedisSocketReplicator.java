@@ -22,8 +22,6 @@ import com.moilioncircle.redis.replicator.cmd.CommandName;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.OffsetHandler;
 import com.moilioncircle.redis.replicator.cmd.ReplyParser;
-import com.moilioncircle.redis.replicator.cmd.impl.PingCommand;
-import com.moilioncircle.redis.replicator.cmd.impl.ReplConfGetAckCommand;
 import com.moilioncircle.redis.replicator.io.AsyncBufferedInputStream;
 import com.moilioncircle.redis.replicator.io.RateLimitInputStream;
 import com.moilioncircle.redis.replicator.io.RedisInputStream;
@@ -52,6 +50,7 @@ import static com.moilioncircle.redis.replicator.Status.CONNECTED;
 import static com.moilioncircle.redis.replicator.Status.CONNECTING;
 import static com.moilioncircle.redis.replicator.Status.DISCONNECTED;
 import static com.moilioncircle.redis.replicator.Status.DISCONNECTING;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -405,10 +404,9 @@ public class RedisSocketReplicator extends AbstractReplicator {
                         logger.warn("command [{}] not register. raw command:[{}]", name, Arrays.deepToString(raw));
                         continue;
                     }
-                    Command command = parser.parse(raw);
-                    if (command instanceof PingCommand) {
+                    if (objToString(raw[0]).equalsIgnoreCase("PING")) {
                         // NOP
-                    } else if (command instanceof ReplConfGetAckCommand) {
+                    } else if (objToString(raw[0]).equalsIgnoreCase("REPLCONF") && objToString(raw[1]).equalsIgnoreCase("GETACK")) {
                         if (mode == PSYNC) executor.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -416,7 +414,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
                             }
                         });
                     } else {
-                        submitEvent(command);
+                        submitEvent(parser.parse(raw));
                     }
                 } else {
                     logger.info("unexpected redis reply:{}", obj);

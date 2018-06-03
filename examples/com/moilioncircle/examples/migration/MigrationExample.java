@@ -199,6 +199,9 @@ public class MigrationExample {
         r.addCommandParser(CommandName.name("LTRIM"), new DefaultCommandParser());
         r.addCommandParser(CommandName.name("SORT"), new DefaultCommandParser());
         r.addCommandParser(CommandName.name("RPOPLPUSH"), new DefaultCommandParser());
+        r.addCommandParser(CommandName.name("ZPOPMIN"), new DefaultCommandParser());
+        r.addCommandParser(CommandName.name("ZPOPMAX"), new DefaultCommandParser());
+        r.addCommandParser(CommandName.name("REPLCONF"), new DefaultCommandParser());
         return r;
     }
 

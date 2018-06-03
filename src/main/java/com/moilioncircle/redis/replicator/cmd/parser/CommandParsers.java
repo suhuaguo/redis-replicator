@@ -20,9 +20,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author Leon Chen
- * @since 2.2.0
+ * @since 2.6.0
  */
-class CommandParsers {
+public class CommandParsers {
 
     public static String objToString(Object object) {
         if (object == null) return null;
