@@ -16,6 +16,8 @@
 
 package com.moilioncircle.redis.replicator.cmd.parser;
 
+import java.math.BigDecimal;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -32,6 +34,14 @@ public class CommandParsers {
 
     public static byte[] objToBytes(Object object) {
         return (byte[]) object;
+    }
+    
+    public static int objToInt(Object object) {
+        return new BigDecimal(objToString(object)).intValueExact();
+    }
+    
+    public static long objToLong(Object object) {
+        return new BigDecimal(objToString(object)).longValueExact();
     }
 
 }

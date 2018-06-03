@@ -19,9 +19,8 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.LTrimCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToLong;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -35,8 +34,8 @@ public class LTrimParser implements CommandParser<LTrimCommand> {
         String key = objToString(command[idx]);
         byte[] rawKey = objToBytes(command[idx]);
         idx++;
-        long start = new BigDecimal(objToString(command[idx++])).longValueExact();
-        long stop = new BigDecimal(objToString(command[idx++])).longValueExact();
+        long start = objToLong(command[idx++]);
+        long stop = objToLong(command[idx++]);
         return new LTrimCommand(key, start, stop, rawKey);
     }
 }

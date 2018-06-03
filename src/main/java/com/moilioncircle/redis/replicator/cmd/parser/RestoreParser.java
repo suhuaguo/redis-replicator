@@ -19,9 +19,8 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.RestoreCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToLong;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -36,7 +35,7 @@ public class RestoreParser implements CommandParser<RestoreCommand> {
         String key = objToString(command[idx]);
         byte[] rawKey = objToBytes(command[idx]);
         idx++;
-        long ttl = new BigDecimal(objToString(command[idx++])).longValueExact();
+        long ttl = objToLong(command[idx++]);
         String serializedValue = objToString(command[idx]);
         byte[] rawSerializedValue = objToBytes(command[idx]);
         idx++;

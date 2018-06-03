@@ -19,9 +19,8 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.BRPopLPushCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToInt;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -38,7 +37,7 @@ public class BRPopLPushParser implements CommandParser<BRPopLPushCommand> {
         String destination = objToString(command[idx]);
         byte[] rawDestination = objToBytes(command[idx]);
         idx++;
-        int timeout = new BigDecimal(objToString(command[idx++])).intValueExact();
+        int timeout = objToInt(command[idx++]);
         return new BRPopLPushCommand(source, destination, timeout, rawSource, rawDestination);
     }
 

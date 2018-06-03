@@ -25,11 +25,11 @@ import com.moilioncircle.redis.replicator.cmd.impl.OverFlowType;
 import com.moilioncircle.redis.replicator.cmd.impl.SetTypeOffsetValue;
 import com.moilioncircle.redis.replicator.cmd.impl.Statement;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToLong;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -129,7 +129,7 @@ public class BitFieldParser implements CommandParser<BitFieldCommand> {
         String offset = objToString(params[idx]);
         byte[] rawOffset = objToBytes(params[idx]);
         idx++;
-        long increment = new BigDecimal(objToString(params[idx++])).longValueExact();
+        long increment = objToLong(params[idx++]);
         incrByTypeOffsetIncrement.setType(type);
         incrByTypeOffsetIncrement.setOffset(offset);
         incrByTypeOffsetIncrement.setIncrement(increment);
@@ -147,7 +147,7 @@ public class BitFieldParser implements CommandParser<BitFieldCommand> {
         String offset = objToString(params[idx]);
         byte[] rawOffset = objToBytes(params[idx]);
         idx++;
-        long value = new BigDecimal(objToString(params[idx++])).longValueExact();
+        long value = objToLong(params[idx++]);
         setTypeOffsetValue.setType(type);
         setTypeOffsetValue.setOffset(offset);
         setTypeOffsetValue.setValue(value);

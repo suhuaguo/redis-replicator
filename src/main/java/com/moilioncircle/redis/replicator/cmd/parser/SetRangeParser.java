@@ -19,9 +19,8 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.SetRangeCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToLong;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 
@@ -36,7 +35,7 @@ public class SetRangeParser implements CommandParser<SetRangeCommand> {
         String key = objToString(command[idx]);
         byte[] rawKey = objToBytes(command[idx]);
         idx++;
-        long index = new BigDecimal(objToString(command[idx++])).longValueExact();
+        long index = objToLong(command[idx++]);
         String value = objToString(command[idx]);
         byte[] rawValue = objToBytes(command[idx]);
         idx++;

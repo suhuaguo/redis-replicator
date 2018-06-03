@@ -20,7 +20,6 @@ import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.Limit;
 import com.moilioncircle.redis.replicator.cmd.impl.SortCommand;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,7 @@ import static com.moilioncircle.redis.replicator.cmd.impl.OrderType.ASC;
 import static com.moilioncircle.redis.replicator.cmd.impl.OrderType.DESC;
 import static com.moilioncircle.redis.replicator.cmd.impl.OrderType.NONE;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToLong;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -57,9 +57,9 @@ public class SortParser implements CommandParser<SortCommand> {
                 sort.setAlpha(true);
             } else if ("LIMIT".equalsIgnoreCase(param) && idx + 2 < command.length) {
                 idx++;
-                long offset = new BigDecimal(objToString(command[idx])).longValueExact();
+                long offset = objToLong(command[idx]);
                 idx++;
-                long count = new BigDecimal(objToString(command[idx])).longValueExact();
+                long count = objToLong(command[idx]);
                 sort.setLimit(new Limit(offset, count));
             } else if ("STORE".equalsIgnoreCase(param) && idx + 1 < command.length) {
                 idx++;

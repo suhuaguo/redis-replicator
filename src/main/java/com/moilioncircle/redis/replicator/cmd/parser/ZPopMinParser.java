@@ -19,9 +19,8 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.ZPopMinCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToInt;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -38,7 +37,7 @@ public class ZPopMinParser implements CommandParser<ZPopMinCommand> {
 		Integer count = null;
 		idx++;
 		if (idx < command.length) {
-			count = new BigDecimal(objToString(command[idx++])).intValueExact();
+			count = objToInt(command[idx++]);
 		}
 		return new ZPopMinCommand(key, count, rawKey);
 	}

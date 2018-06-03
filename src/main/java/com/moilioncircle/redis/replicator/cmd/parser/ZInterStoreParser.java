@@ -20,9 +20,8 @@ import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.AggregateType;
 import com.moilioncircle.redis.replicator.cmd.impl.ZInterStoreCommand;
 
-import java.math.BigDecimal;
-
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToInt;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
 
 /**
@@ -37,7 +36,7 @@ public class ZInterStoreParser implements CommandParser<ZInterStoreCommand> {
         String destination = objToString(command[idx]);
         byte[] rawDestination = objToBytes(command[idx]);
         idx++;
-        int numkeys = new BigDecimal(objToString(command[idx++])).intValueExact();
+        int numkeys = objToInt(command[idx++]);
         String[] keys = new String[numkeys];
         byte[][] rawKeys = new byte[numkeys][];
         for (int i = 0; i < numkeys; i++) {
