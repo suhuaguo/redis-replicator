@@ -248,7 +248,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
     }
 
     protected void heartbeat() {
-        assert heartbeat.isCancelled();
+        assert heartbeat == null || heartbeat.isCancelled();
         heartbeat = executor.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
