@@ -17,7 +17,15 @@
 package com.moilioncircle.redis.replicator.cmd.parser;
 
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.MaxLen;
 import com.moilioncircle.redis.replicator.cmd.impl.XTrimCommand;
+
+import java.util.Objects;
+
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.eq;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toLong;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 
 /**
  * @author Leon Chen
@@ -26,6 +34,22 @@ import com.moilioncircle.redis.replicator.cmd.impl.XTrimCommand;
 public class XTrimParser implements CommandParser<XTrimCommand> {
 	@Override
 	public XTrimCommand parse(Object[] command) {
-		return new XTrimCommand();
+		int idx = 1;
+		String key = toRune(command[idx]);
+		byte[] rawKey = toBytes(command[idx]);
+		idx++;
+		MaxLen maxLen = null;
+		if (eq(toRune(command[idx]), "MAXLEN")) {
+			idx++;
+			Boolean approximation = null;
+			if (Objects.equals(toRune(command[idx]), "~")) {
+				approximation = true;
+				idx++;
+			}
+			long count = toLong(command[idx]);
+			idx++;
+			maxLen = new MaxLen(approximation, count);
+		}
+		return new XTrimCommand(key, maxLen, rawKey);
 	}
 }

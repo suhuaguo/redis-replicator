@@ -17,7 +17,18 @@
 package com.moilioncircle.redis.replicator.cmd.parser;
 
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
+import com.moilioncircle.redis.replicator.cmd.impl.MaxLen;
 import com.moilioncircle.redis.replicator.cmd.impl.XAddCommand;
+import com.moilioncircle.redis.replicator.util.ByteArrayMap;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.eq;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toLong;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 
 /**
  * @author Leon Chen
@@ -26,6 +37,37 @@ import com.moilioncircle.redis.replicator.cmd.impl.XAddCommand;
 public class XAddParser implements CommandParser<XAddCommand> {
 	@Override
 	public XAddCommand parse(Object[] command) {
-		return new XAddCommand();
+		int idx = 1;
+		String key = toRune(command[idx]);
+		byte[] rawKey = toBytes(command[idx]);
+		idx++;
+		MaxLen maxLen = null;
+		if (eq(toRune(command[idx]), "MAXLEN")) {
+			idx++;
+			Boolean approximation = null;
+			if (Objects.equals(toRune(command[idx]), "~")) {
+				approximation = true;
+				idx++;
+			}
+			long count = toLong(command[idx]);
+			idx++;
+			maxLen = new MaxLen(approximation, count);
+		}
+		String id = toRune(command[idx]);
+		byte[] rawId = toBytes(command[idx]);
+		idx++;
+		Map<String, String> fields = new LinkedHashMap<>();
+		ByteArrayMap<byte[]> rawFields = new ByteArrayMap<>();
+		while (idx < command.length) {
+			String field = toRune(command[idx]);
+			byte[] rawField = toBytes(command[idx]);
+			idx++;
+			String value = idx == command.length ? null : toRune(command[idx]);
+			byte[] rawValue = idx == command.length ? null : toBytes(command[idx]);
+			idx++;
+			fields.put(field, value);
+			rawFields.put(rawField, rawValue);
+		}
+		return new XAddCommand(key, maxLen, id, fields, rawKey, rawId, rawFields);
 	}
 }

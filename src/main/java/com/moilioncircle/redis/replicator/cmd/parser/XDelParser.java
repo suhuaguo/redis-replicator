@@ -19,6 +19,9 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.XDelCommand;
 
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
@@ -26,6 +29,16 @@ import com.moilioncircle.redis.replicator.cmd.impl.XDelCommand;
 public class XDelParser implements CommandParser<XDelCommand> {
 	@Override
 	public XDelCommand parse(Object[] command) {
-		return new XDelCommand();
+		int idx = 1;
+		String key = toRune(command[idx]);
+		byte[] rawKey = toBytes(command[idx]);
+		idx++;
+		String[] ids = new String[command.length - 2];
+		byte[][] rawIds = new byte[command.length - 2][];
+		for (int i = idx, j = 0; i < command.length; i++, j++) {
+			ids[j] = toRune(command[i]);
+			rawIds[j] = toBytes(command[i]);
+		}
+		return new XDelCommand(key, ids, rawKey, rawIds);
 	}
 }

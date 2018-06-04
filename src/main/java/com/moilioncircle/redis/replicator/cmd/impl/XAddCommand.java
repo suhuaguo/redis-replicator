@@ -38,6 +38,8 @@ public class XAddCommand implements Command {
 	
 	private byte[] rawKey;
 	
+	private byte[] rawId;
+	
 	private Map<byte[], byte[]> rawFields;
 	
 	public XAddCommand() {
@@ -45,15 +47,16 @@ public class XAddCommand implements Command {
 	}
 	
 	public XAddCommand(String key, MaxLen maxLen, String id, Map<String, String> fields) {
-		this(key, maxLen, id, fields, null, null);
+		this(key, maxLen, id, fields, null, null, null);
 	}
 	
-	public XAddCommand(String key, MaxLen maxLen, String id, Map<String, String> fields, byte[] rawKey, Map<byte[], byte[]> rawFields) {
+	public XAddCommand(String key, MaxLen maxLen, String id, Map<String, String> fields, byte[] rawKey, byte[] rawId, Map<byte[], byte[]> rawFields) {
 		this.key = key;
 		this.maxLen = maxLen;
 		this.id = id;
 		this.fields = fields;
 		this.rawKey = rawKey;
+		this.rawId = rawId;
 		this.rawFields = rawFields;
 	}
 	
@@ -95,6 +98,14 @@ public class XAddCommand implements Command {
 	
 	public void setRawKey(byte[] rawKey) {
 		this.rawKey = rawKey;
+	}
+	
+	public byte[] getRawId() {
+		return rawId;
+	}
+	
+	public void setRawId(byte[] rawId) {
+		this.rawId = rawId;
 	}
 	
 	public Map<byte[], byte[]> getRawFields() {
