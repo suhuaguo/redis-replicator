@@ -72,14 +72,14 @@ public class BitFieldParser implements CommandParser<BitFieldCommand> {
     private int parseOverFlow(int i, Object[] params, OverFlow overFlow) {
         int idx = i;
         accept(toRune(params[idx++]), "OVERFLOW");
-        OverFlowType overFlowType;
+        OverFlowType overflow;
         String keyword = toRune(params[idx++]);
         if (eq(keyword, "WRAP")) {
-            overFlowType = OverFlowType.WRAP;
+            overflow = OverFlowType.WRAP;
         } else if (eq(keyword, "SAT")) {
-            overFlowType = OverFlowType.SAT;
+            overflow = OverFlowType.SAT;
         } else if (eq(keyword, "FAIL")) {
-            overFlowType = OverFlowType.FAIL;
+            overflow = OverFlowType.FAIL;
         } else {
             throw new AssertionError("parse [BITFIELD] command error." + keyword);
         }
@@ -93,7 +93,7 @@ public class BitFieldParser implements CommandParser<BitFieldCommand> {
             }
             while (token != null && (eq(token, "GET") || eq(token, "SET") || eq(token, "INCRBY")));
         }
-        overFlow.setOverFlowType(overFlowType);
+        overFlow.setOverFlowType(overflow);
         overFlow.setStatements(list);
         return idx;
     }
