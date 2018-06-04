@@ -22,6 +22,7 @@ import com.moilioncircle.redis.replicator.cmd.impl.ZUnionStoreCommand;
 
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.eq;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toDouble;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toInt;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 
@@ -52,7 +53,7 @@ public class ZUnionStoreParser implements CommandParser<ZUnionStoreCommand> {
                 idx++;
                 weights = new double[numkeys];
                 for (int i = 0; i < numkeys; i++) {
-                    weights[i] = Double.parseDouble(toRune(command[idx++]));
+                    weights[i] = toDouble(command[idx++]);
                 }
             } else if (eq(param, "AGGREGATE")) {
                 idx++;

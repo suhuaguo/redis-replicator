@@ -20,6 +20,7 @@ import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.ZIncrByCommand;
 
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toBytes;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toDouble;
 import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 
 /**
@@ -34,7 +35,7 @@ public class ZIncrByParser implements CommandParser<ZIncrByCommand> {
         String key = toRune(command[idx]);
         byte[] rawKey = toBytes(command[idx]);
         idx++;
-        double increment = Double.parseDouble(toRune(command[idx++]));
+        double increment = toDouble(command[idx++]);
         String member = toRune(command[idx]);
         byte[] rawMember = toBytes(command[idx]);
         idx++;

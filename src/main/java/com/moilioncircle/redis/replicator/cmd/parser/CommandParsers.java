@@ -35,6 +35,10 @@ public class CommandParsers {
         if (object == null) return null;
         return new String(toBytes(object), UTF_8);
     }
+
+    public static double toDouble(Object object) {
+        return Double.parseDouble(toRune(object));
+    }
     
     public static int toInt(Object object) {
         return new BigDecimal(toRune(object)).intValueExact();
