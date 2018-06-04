@@ -18,6 +18,8 @@ package com.moilioncircle.redis.replicator.cmd.impl;
 
 import com.moilioncircle.redis.replicator.cmd.Command;
 
+import java.util.Map;
+
 /**
  * @author Leon Chen
  * @since 2.6.0
@@ -25,4 +27,91 @@ import com.moilioncircle.redis.replicator.cmd.Command;
 public class XAddCommand implements Command {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private String key;
+	
+	private MaxLen maxLen;
+	
+	private String id;
+	
+	private Map<String, String> fields;
+	
+	private byte[] rawKey;
+	
+	private Map<byte[], byte[]> rawFields;
+	
+	public XAddCommand() {
+	
+	}
+	
+	public XAddCommand(String key, MaxLen maxLen, String id, Map<String, String> fields) {
+		this(key, maxLen, id, fields, null, null);
+	}
+	
+	public XAddCommand(String key, MaxLen maxLen, String id, Map<String, String> fields, byte[] rawKey, Map<byte[], byte[]> rawFields) {
+		this.key = key;
+		this.maxLen = maxLen;
+		this.id = id;
+		this.fields = fields;
+		this.rawKey = rawKey;
+		this.rawFields = rawFields;
+	}
+	
+	public String getKey() {
+		return key;
+	}
+	
+	public void setKey(String key) {
+		this.key = key;
+	}
+	
+	public MaxLen getMaxLen() {
+		return maxLen;
+	}
+	
+	public void setMaxLen(MaxLen maxLen) {
+		this.maxLen = maxLen;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public Map<String, String> getFields() {
+		return fields;
+	}
+	
+	public void setFields(Map<String, String> fields) {
+		this.fields = fields;
+	}
+	
+	public byte[] getRawKey() {
+		return rawKey;
+	}
+	
+	public void setRawKey(byte[] rawKey) {
+		this.rawKey = rawKey;
+	}
+	
+	public Map<byte[], byte[]> getRawFields() {
+		return rawFields;
+	}
+	
+	public void setRawFields(Map<byte[], byte[]> rawFields) {
+		this.rawFields = rawFields;
+	}
+	
+	@Override
+	public String toString() {
+		return "XAddCommand{" +
+				"key='" + key + '\'' +
+				", maxLen=" + maxLen +
+				", id='" + id + '\'' +
+				", fields=" + fields +
+				'}';
+	}
 }

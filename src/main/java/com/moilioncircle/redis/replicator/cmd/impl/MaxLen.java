@@ -16,65 +16,50 @@
 
 package com.moilioncircle.redis.replicator.cmd.impl;
 
-import com.moilioncircle.redis.replicator.cmd.Command;
+import java.io.Serializable;
 
 /**
  * @author Leon Chen
  * @since 2.6.0
  */
-public class XTrimCommand implements Command {
+public class MaxLen implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String key;
+	private Boolean approximation;
 	
-	private MaxLen maxLen;
+	private long count;
 	
-	private byte[] rawKey;
-	
-	public XTrimCommand() {
+	public MaxLen() {
 	
 	}
 	
-	public XTrimCommand(String key, MaxLen maxLen) {
-		this(key, maxLen, null);
+	public MaxLen(Boolean approximation, long count) {
+		this.approximation = approximation;
+		this.count = count;
 	}
 	
-	public XTrimCommand(String key, MaxLen maxLen, byte[] rawKey) {
-		this.key = key;
-		this.maxLen = maxLen;
-		this.rawKey = rawKey;
+	public Boolean getApproximation() {
+		return approximation;
 	}
 	
-	public String getKey() {
-		return key;
+	public void setApproximation(Boolean approximation) {
+		this.approximation = approximation;
 	}
 	
-	public void setKey(String key) {
-		this.key = key;
+	public long getCount() {
+		return count;
 	}
 	
-	public MaxLen getMaxLen() {
-		return maxLen;
-	}
-	
-	public void setMaxLen(MaxLen maxLen) {
-		this.maxLen = maxLen;
-	}
-	
-	public byte[] getRawKey() {
-		return rawKey;
-	}
-	
-	public void setRawKey(byte[] rawKey) {
-		this.rawKey = rawKey;
+	public void setCount(long count) {
+		this.count = count;
 	}
 	
 	@Override
 	public String toString() {
-		return "XTrimCommand{" +
-				"key='" + key + '\'' +
-				", maxLen=" + maxLen +
+		return "MaxLen{" +
+				"approximation=" + approximation +
+				", count=" + count +
 				'}';
 	}
 }
