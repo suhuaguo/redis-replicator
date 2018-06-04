@@ -55,18 +55,18 @@ public class BitFieldParser implements CommandParser<BitFieldCommand> {
             }
             while (token != null && (eq(token, "GET") || eq(token, "SET") || eq(token, "INCRBY")));
         }
-        List<OverFlow> overFlowList = null;
+        List<OverFlow> overflows = null;
         if (idx < command.length) {
-            overFlowList = new ArrayList<>();
+            overflows = new ArrayList<>();
             do {
                 OverFlow overFlow = new OverFlow();
                 idx = parseOverFlow(idx, command, overFlow);
-                overFlowList.add(overFlow);
+                overflows.add(overFlow);
                 if (idx >= command.length) break;
             } while (eq(toRune(command[idx]), "OVERFLOW"));
         }
 
-        return new BitFieldCommand(key, list, overFlowList, rawKey);
+        return new BitFieldCommand(key, list, overflows, rawKey);
     }
 
     private int parseOverFlow(int i, Object[] params, OverFlow overFlow) {
