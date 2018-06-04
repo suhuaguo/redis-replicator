@@ -19,7 +19,7 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.SelectCommand;
 
-import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToInt;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toInt;
 
 /**
  * @author Leon Chen
@@ -28,7 +28,7 @@ import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objTo
 public class SelectParser implements CommandParser<SelectCommand> {
     @Override
     public SelectCommand parse(Object[] command) {
-        int index = objToInt(command[1]);
+        int index = toInt(command[1]);
         return new SelectCommand(index);
     }
 

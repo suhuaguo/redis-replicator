@@ -20,7 +20,8 @@ import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.ReplConfCommand;
 import com.moilioncircle.redis.replicator.cmd.impl.ReplConfGetAckCommand;
 
-import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.eq;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 
 /**
  * @author Leon Chen
@@ -30,9 +31,9 @@ public class ReplConfParser implements CommandParser<ReplConfCommand> {
 	@Override
 	public ReplConfCommand parse(Object[] command) {
 		int idx = 1;
-		String type = objToString(command[idx]);
+		String type = toRune(command[idx]);
 		idx++;
-		if (type.equalsIgnoreCase("GETACK")) {
+		if (eq(type, "GETACK")) {
 			return new ReplConfGetAckCommand();
 		} else {
 			throw new AssertionError("parse [REPLCONF] command error." + type);

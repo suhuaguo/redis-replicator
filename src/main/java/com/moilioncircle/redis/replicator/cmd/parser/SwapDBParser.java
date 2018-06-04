@@ -19,7 +19,7 @@ package com.moilioncircle.redis.replicator.cmd.parser;
 import com.moilioncircle.redis.replicator.cmd.CommandParser;
 import com.moilioncircle.redis.replicator.cmd.impl.SwapDBCommand;
 
-import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToInt;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toInt;
 
 /**
  * @author Leon Chen
@@ -30,8 +30,8 @@ public class SwapDBParser implements CommandParser<SwapDBCommand> {
     @Override
     public SwapDBCommand parse(Object[] command) {
         int idx = 1;
-        int source = objToInt(command[idx++]);
-        int target = objToInt(command[idx++]);
+        int source = toInt(command[idx++]);
+        int target = toInt(command[idx++]);
         return new SwapDBCommand(source, target);
     }
 }

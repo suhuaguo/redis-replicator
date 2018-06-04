@@ -17,6 +17,7 @@
 package com.moilioncircle.redis.replicator.cmd.parser;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -26,21 +27,27 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class CommandParsers {
 
-    public static byte[] objToBytes(Object object) {
+    public static byte[] toBytes(Object object) {
         return (byte[]) object;
     }
     
-    public static String objToString(Object object) {
+    public static String toRune(Object object) {
         if (object == null) return null;
-        return new String(objToBytes(object), UTF_8);
+        return new String(toBytes(object), UTF_8);
     }
     
-    public static int objToInt(Object object) {
-        return new BigDecimal(objToString(object)).intValueExact();
+    public static int toInt(Object object) {
+        return new BigDecimal(toRune(object)).intValueExact();
     }
     
-    public static long objToLong(Object object) {
-        return new BigDecimal(objToString(object)).longValueExact();
+    public static long toLong(Object object) {
+        return new BigDecimal(toRune(object)).longValueExact();
+    }
+
+    public static boolean eq(String o1, String o2) {
+        Objects.requireNonNull(o1);
+        Objects.requireNonNull(o2);
+        return o1.equalsIgnoreCase(o2);
     }
 
 }

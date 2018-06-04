@@ -50,7 +50,8 @@ import static com.moilioncircle.redis.replicator.Status.CONNECTED;
 import static com.moilioncircle.redis.replicator.Status.CONNECTING;
 import static com.moilioncircle.redis.replicator.Status.DISCONNECTED;
 import static com.moilioncircle.redis.replicator.Status.DISCONNECTING;
-import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.objToString;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.eq;
+import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRune;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -404,9 +405,9 @@ public class RedisSocketReplicator extends AbstractReplicator {
                         logger.warn("command [{}] not register. raw command:[{}]", name, Arrays.deepToString(raw));
                         continue;
                     }
-                    if (objToString(raw[0]).equalsIgnoreCase("PING")) {
+                    if (eq(toRune(raw[0]), "PING")) {
                         // NOP
-                    } else if (objToString(raw[0]).equalsIgnoreCase("REPLCONF") && objToString(raw[1]).equalsIgnoreCase("GETACK")) {
+                    } else if (eq(toRune(raw[0]),"REPLCONF") && eq(toRune(raw[1]),"GETACK")) {
                         if (mode == PSYNC) executor.execute(new Runnable() {
                             @Override
                             public void run() {
