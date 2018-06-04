@@ -414,8 +414,9 @@ public class RedisSocketReplicator extends AbstractReplicator {
                                 sendQuietly("REPLCONF".getBytes(), "ACK".getBytes(), String.valueOf(configuration.getReplOffset()).getBytes());
                             }
                         });
+                    } else {
+                        submitEvent(parser.parse(raw));
                     }
-                    submitEvent(parser.parse(raw));
                 } else {
                     logger.info("unexpected redis reply:{}", obj);
                 }
