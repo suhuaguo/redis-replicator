@@ -30,7 +30,7 @@ public class CommandParsers {
     public static byte[] toBytes(Object object) {
         return (byte[]) object;
     }
-    
+
     public static String toRune(Object object) {
         if (object == null) return null;
         return new String(toBytes(object), UTF_8);
@@ -39,27 +39,13 @@ public class CommandParsers {
     public static double toDouble(Object object) {
         return Double.parseDouble(toRune(object));
     }
-    
+
     public static int toInt(Object object) {
         return new BigDecimal(toRune(object)).intValueExact();
     }
-    
+
     public static long toLong(Object object) {
         return new BigDecimal(toRune(object)).longValueExact();
-    }
-    
-    public static boolean validStreamId(Object object) {
-        if (object == null) return false;
-        String id = toRune(object);
-        if (Objects.equals(id, "+") || Objects.equals(id, "-")) return true;
-        int idx = id.indexOf('-');
-        try {
-            Long.parseLong(id.substring(0, idx)); // ms
-            Long.parseLong(id.substring(idx + 1, id.length())); // seq
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public static boolean eq(String o1, String o2) {

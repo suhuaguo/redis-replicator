@@ -35,39 +35,39 @@ import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRun
  * @since 2.6.0
  */
 public class XAddParser implements CommandParser<XAddCommand> {
-	@Override
-	public XAddCommand parse(Object[] command) {
-		int idx = 1;
-		String key = toRune(command[idx]);
-		byte[] rawKey = toBytes(command[idx]);
-		idx++;
-		MaxLen maxLen = null;
-		if (eq(toRune(command[idx]), "MAXLEN")) {
-			idx++;
-			Boolean approximation = null;
-			if (Objects.equals(toRune(command[idx]), "~")) {
-				approximation = true;
-				idx++;
-			}
-			long count = toLong(command[idx]);
-			idx++;
-			maxLen = new MaxLen(approximation, count);
-		}
-		String id = toRune(command[idx]);
-		byte[] rawId = toBytes(command[idx]);
-		idx++;
-		Map<String, String> fields = new LinkedHashMap<>();
-		ByteArrayMap<byte[]> rawFields = new ByteArrayMap<>();
-		while (idx < command.length) {
-			String field = toRune(command[idx]);
-			byte[] rawField = toBytes(command[idx]);
-			idx++;
-			String value = idx == command.length ? null : toRune(command[idx]);
-			byte[] rawValue = idx == command.length ? null : toBytes(command[idx]);
-			idx++;
-			fields.put(field, value);
-			rawFields.put(rawField, rawValue);
-		}
-		return new XAddCommand(key, maxLen, id, fields, rawKey, rawId, rawFields);
-	}
+    @Override
+    public XAddCommand parse(Object[] command) {
+        int idx = 1;
+        String key = toRune(command[idx]);
+        byte[] rawKey = toBytes(command[idx]);
+        idx++;
+        MaxLen maxLen = null;
+        if (eq(toRune(command[idx]), "MAXLEN")) {
+            idx++;
+            Boolean approximation = null;
+            if (Objects.equals(toRune(command[idx]), "~")) {
+                approximation = true;
+                idx++;
+            }
+            long count = toLong(command[idx]);
+            idx++;
+            maxLen = new MaxLen(approximation, count);
+        }
+        String id = toRune(command[idx]);
+        byte[] rawId = toBytes(command[idx]);
+        idx++;
+        Map<String, String> fields = new LinkedHashMap<>();
+        ByteArrayMap<byte[]> rawFields = new ByteArrayMap<>();
+        while (idx < command.length) {
+            String field = toRune(command[idx]);
+            byte[] rawField = toBytes(command[idx]);
+            idx++;
+            String value = idx == command.length ? null : toRune(command[idx]);
+            byte[] rawValue = idx == command.length ? null : toBytes(command[idx]);
+            idx++;
+            fields.put(field, value);
+            rawFields.put(rawField, rawValue);
+        }
+        return new XAddCommand(key, maxLen, id, fields, rawKey, rawId, rawFields);
+    }
 }

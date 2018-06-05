@@ -27,21 +27,21 @@ import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRun
  * @since 2.6.0
  */
 public class XAckParser implements CommandParser<XAckCommand> {
-	@Override
-	public XAckCommand parse(Object[] command) {
-		int idx = 1;
-		String key = toRune(command[idx]);
-		byte[] rawKey = toBytes(command[idx]);
-		idx++;
-		String group = toRune(command[idx]);
-		byte[] rawGroup = toBytes(command[idx]);
-		idx++;
-		String[] ids = new String[command.length - 3];
-		byte[][] rawIds = new byte[command.length - 3][];
-		for (int i = idx, j = 0; i < command.length; i++, j++) {
-			ids[j] = toRune(command[i]);
-			rawIds[j] = toBytes(command[i]);
-		}
-		return new XAckCommand(key, group, ids, rawKey, rawGroup, rawIds);
-	}
+    @Override
+    public XAckCommand parse(Object[] command) {
+        int idx = 1;
+        String key = toRune(command[idx]);
+        byte[] rawKey = toBytes(command[idx]);
+        idx++;
+        String group = toRune(command[idx]);
+        byte[] rawGroup = toBytes(command[idx]);
+        idx++;
+        String[] ids = new String[command.length - 3];
+        byte[][] rawIds = new byte[command.length - 3][];
+        for (int i = idx, j = 0; i < command.length; i++, j++) {
+            ids[j] = toRune(command[i]);
+            rawIds[j] = toBytes(command[i]);
+        }
+        return new XAckCommand(key, group, ids, rawKey, rawGroup, rawIds);
+    }
 }

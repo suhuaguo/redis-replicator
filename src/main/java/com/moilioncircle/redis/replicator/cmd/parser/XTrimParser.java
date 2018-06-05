@@ -32,24 +32,24 @@ import static com.moilioncircle.redis.replicator.cmd.parser.CommandParsers.toRun
  * @since 2.6.0
  */
 public class XTrimParser implements CommandParser<XTrimCommand> {
-	@Override
-	public XTrimCommand parse(Object[] command) {
-		int idx = 1;
-		String key = toRune(command[idx]);
-		byte[] rawKey = toBytes(command[idx]);
-		idx++;
-		MaxLen maxLen = null;
-		if (eq(toRune(command[idx]), "MAXLEN")) {
-			idx++;
-			Boolean approximation = null;
-			if (Objects.equals(toRune(command[idx]), "~")) {
-				approximation = true;
-				idx++;
-			}
-			long count = toLong(command[idx]);
-			idx++;
-			maxLen = new MaxLen(approximation, count);
-		}
-		return new XTrimCommand(key, maxLen, rawKey);
-	}
+    @Override
+    public XTrimCommand parse(Object[] command) {
+        int idx = 1;
+        String key = toRune(command[idx]);
+        byte[] rawKey = toBytes(command[idx]);
+        idx++;
+        MaxLen maxLen = null;
+        if (eq(toRune(command[idx]), "MAXLEN")) {
+            idx++;
+            Boolean approximation = null;
+            if (Objects.equals(toRune(command[idx]), "~")) {
+                approximation = true;
+                idx++;
+            }
+            long count = toLong(command[idx]);
+            idx++;
+            maxLen = new MaxLen(approximation, count);
+        }
+        return new XTrimCommand(key, maxLen, rawKey);
+    }
 }

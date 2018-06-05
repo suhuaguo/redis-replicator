@@ -23,43 +23,43 @@ import java.io.Serializable;
  * @since 2.6.0
  */
 public class MaxLen implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private Boolean approximation;
-	
-	private long count;
-	
-	public MaxLen() {
-	
-	}
-	
-	public MaxLen(Boolean approximation, long count) {
-		this.approximation = approximation;
-		this.count = count;
-	}
-	
-	public Boolean getApproximation() {
-		return approximation;
-	}
-	
-	public void setApproximation(Boolean approximation) {
-		this.approximation = approximation;
-	}
-	
-	public long getCount() {
-		return count;
-	}
-	
-	public void setCount(long count) {
-		this.count = count;
-	}
-	
-	@Override
-	public String toString() {
-		return "MaxLen{" +
-				"approximation=" + approximation +
-				", count=" + count +
-				'}';
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    private Boolean approximation;
+
+    private long count;
+
+    public MaxLen() {
+
+    }
+
+    public MaxLen(Boolean approximation, long count) {
+        this.approximation = approximation;
+        this.count = count;
+    }
+
+    public Boolean getApproximation() {
+        return approximation;
+    }
+
+    public void setApproximation(Boolean approximation) {
+        this.approximation = approximation;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "MaxLen{" +
+                "approximation=" + approximation +
+                ", count=" + count +
+                '}';
+    }
 }

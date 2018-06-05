@@ -25,69 +25,69 @@ import java.util.Arrays;
  * @since 2.6.0
  */
 public class XDelCommand implements Command {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private String key;
-	
-	private String[] ids;
-	
-	private byte[] rawKey;
-	
-	private byte[][] rawIds;
-	
-	public XDelCommand() {
-	
-	}
-	
-	public XDelCommand(String key, String[] ids) {
-		this(key, ids, null, null);
-	}
-	
-	public XDelCommand(String key, String[] ids, byte[] rawKey, byte[][] rawIds) {
-		this.key = key;
-		this.ids = ids;
-		this.rawKey = rawKey;
-		this.rawIds = rawIds;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public String[] getIds() {
-		return ids;
-	}
-	
-	public void setIds(String[] ids) {
-		this.ids = ids;
-	}
-	
-	public byte[] getRawKey() {
-		return rawKey;
-	}
-	
-	public void setRawKey(byte[] rawKey) {
-		this.rawKey = rawKey;
-	}
-	
-	public byte[][] getRawIds() {
-		return rawIds;
-	}
-	
-	public void setRawIds(byte[][] rawIds) {
-		this.rawIds = rawIds;
-	}
-	
-	@Override
-	public String toString() {
-		return "XDelCommand{" +
-				"key='" + key + '\'' +
-				", ids=" + Arrays.toString(ids) +
-				'}';
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    private String key;
+
+    private String[] ids;
+
+    private byte[] rawKey;
+
+    private byte[][] rawIds;
+
+    public XDelCommand() {
+
+    }
+
+    public XDelCommand(String key, String[] ids) {
+        this(key, ids, null, null);
+    }
+
+    public XDelCommand(String key, String[] ids, byte[] rawKey, byte[][] rawIds) {
+        this.key = key;
+        this.ids = ids;
+        this.rawKey = rawKey;
+        this.rawIds = rawIds;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String[] getIds() {
+        return ids;
+    }
+
+    public void setIds(String[] ids) {
+        this.ids = ids;
+    }
+
+    public byte[] getRawKey() {
+        return rawKey;
+    }
+
+    public void setRawKey(byte[] rawKey) {
+        this.rawKey = rawKey;
+    }
+
+    public byte[][] getRawIds() {
+        return rawIds;
+    }
+
+    public void setRawIds(byte[][] rawIds) {
+        this.rawIds = rawIds;
+    }
+
+    @Override
+    public String toString() {
+        return "XDelCommand{" +
+                "key='" + key + '\'' +
+                ", ids=" + Arrays.toString(ids) +
+                '}';
+    }
 }

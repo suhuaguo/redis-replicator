@@ -21,92 +21,92 @@ package com.moilioncircle.redis.replicator.cmd.impl;
  * @since 2.6.0
  */
 public class XGroupCreateCommand extends XGroupCommand {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private String key;
-	
-	private String group;
-	
-	private String id;
-	
-	private byte[] rawKey;
-	
-	private byte[] rawGroup;
-	
-	private byte[] rawId;
-	
-	public XGroupCreateCommand() {
-	
-	}
-	
-	public XGroupCreateCommand(String key, String group, String id) {
-		this(key, group, id, null, null, null);
-	}
-	
-	public XGroupCreateCommand(String key, String group, String id, byte[] rawKey, byte[] rawGroup, byte[] rawId) {
-		this.key = key;
-		this.group = group;
-		this.id = id;
-		this.rawKey = rawKey;
-		this.rawGroup = rawGroup;
-		this.rawId = rawId;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public String getGroup() {
-		return group;
-	}
-	
-	public void setGroup(String group) {
-		this.group = group;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public byte[] getRawKey() {
-		return rawKey;
-	}
-	
-	public void setRawKey(byte[] rawKey) {
-		this.rawKey = rawKey;
-	}
-	
-	public byte[] getRawGroup() {
-		return rawGroup;
-	}
-	
-	public void setRawGroup(byte[] rawGroup) {
-		this.rawGroup = rawGroup;
-	}
-	
-	public byte[] getRawId() {
-		return rawId;
-	}
-	
-	public void setRawId(byte[] rawId) {
-		this.rawId = rawId;
-	}
-	
-	@Override
-	public String toString() {
-		return "XGroupCreateCommand{" +
-				"key='" + key + '\'' +
-				", group='" + group + '\'' +
-				", id='" + id + '\'' +
-				'}';
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    private String key;
+
+    private String group;
+
+    private String id;
+
+    private byte[] rawKey;
+
+    private byte[] rawGroup;
+
+    private byte[] rawId;
+
+    public XGroupCreateCommand() {
+
+    }
+
+    public XGroupCreateCommand(String key, String group, String id) {
+        this(key, group, id, null, null, null);
+    }
+
+    public XGroupCreateCommand(String key, String group, String id, byte[] rawKey, byte[] rawGroup, byte[] rawId) {
+        this.key = key;
+        this.group = group;
+        this.id = id;
+        this.rawKey = rawKey;
+        this.rawGroup = rawGroup;
+        this.rawId = rawId;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public byte[] getRawKey() {
+        return rawKey;
+    }
+
+    public void setRawKey(byte[] rawKey) {
+        this.rawKey = rawKey;
+    }
+
+    public byte[] getRawGroup() {
+        return rawGroup;
+    }
+
+    public void setRawGroup(byte[] rawGroup) {
+        this.rawGroup = rawGroup;
+    }
+
+    public byte[] getRawId() {
+        return rawId;
+    }
+
+    public void setRawId(byte[] rawId) {
+        this.rawId = rawId;
+    }
+
+    @Override
+    public String toString() {
+        return "XGroupCreateCommand{" +
+                "key='" + key + '\'' +
+                ", group='" + group + '\'' +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }

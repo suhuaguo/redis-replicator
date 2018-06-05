@@ -280,7 +280,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
         }
         outputStream.flush();
     }
-    
+
     protected void sendQuietly(byte[] command, final byte[]... args) {
         try {
             send(command, args);
@@ -407,7 +407,7 @@ public class RedisSocketReplicator extends AbstractReplicator {
                     }
                     if (eq(toRune(raw[0]), "PING")) {
                         // NOP
-                    } else if (eq(toRune(raw[0]),"REPLCONF") && eq(toRune(raw[1]),"GETACK")) {
+                    } else if (eq(toRune(raw[0]), "REPLCONF") && eq(toRune(raw[1]), "GETACK")) {
                         if (mode == PSYNC) executor.execute(new Runnable() {
                             @Override
                             public void run() {

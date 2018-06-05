@@ -71,7 +71,7 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         }
         return null;
     }
-    
+
     @Override
     public Event applyExpireTimeMs(RedisInputStream in, DB db, int version) throws IOException {
         SkipRdbParser parser = new SkipRdbParser(in);
@@ -86,7 +86,7 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         }
         return null;
     }
-    
+
     @Override
     public Event applyFreq(RedisInputStream in, DB db, int version) throws IOException {
         in.read();
@@ -94,7 +94,7 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         rdbLoadObject(in, db, valueType, version);
         return null;
     }
-    
+
     @Override
     public Event applyIdle(RedisInputStream in, DB db, int version) throws IOException {
         SkipRdbParser parser = new SkipRdbParser(in);
@@ -111,7 +111,7 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         parser.rdbLoadEncodedStringObject();
         return null;
     }
-    
+
     @Override
     public Event applyModuleAux(RedisInputStream in, int version) throws IOException {
         SkipRdbParser parser = new SkipRdbParser(in);

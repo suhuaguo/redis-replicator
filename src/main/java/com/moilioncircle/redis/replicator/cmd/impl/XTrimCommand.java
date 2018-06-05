@@ -23,58 +23,58 @@ import com.moilioncircle.redis.replicator.cmd.Command;
  * @since 2.6.0
  */
 public class XTrimCommand implements Command {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private String key;
-	
-	private MaxLen maxLen;
-	
-	private byte[] rawKey;
-	
-	public XTrimCommand() {
-	
-	}
-	
-	public XTrimCommand(String key, MaxLen maxLen) {
-		this(key, maxLen, null);
-	}
-	
-	public XTrimCommand(String key, MaxLen maxLen, byte[] rawKey) {
-		this.key = key;
-		this.maxLen = maxLen;
-		this.rawKey = rawKey;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public MaxLen getMaxLen() {
-		return maxLen;
-	}
-	
-	public void setMaxLen(MaxLen maxLen) {
-		this.maxLen = maxLen;
-	}
-	
-	public byte[] getRawKey() {
-		return rawKey;
-	}
-	
-	public void setRawKey(byte[] rawKey) {
-		this.rawKey = rawKey;
-	}
-	
-	@Override
-	public String toString() {
-		return "XTrimCommand{" +
-				"key='" + key + '\'' +
-				", maxLen=" + maxLen +
-				'}';
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    private String key;
+
+    private MaxLen maxLen;
+
+    private byte[] rawKey;
+
+    public XTrimCommand() {
+
+    }
+
+    public XTrimCommand(String key, MaxLen maxLen) {
+        this(key, maxLen, null);
+    }
+
+    public XTrimCommand(String key, MaxLen maxLen, byte[] rawKey) {
+        this.key = key;
+        this.maxLen = maxLen;
+        this.rawKey = rawKey;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public MaxLen getMaxLen() {
+        return maxLen;
+    }
+
+    public void setMaxLen(MaxLen maxLen) {
+        this.maxLen = maxLen;
+    }
+
+    public byte[] getRawKey() {
+        return rawKey;
+    }
+
+    public void setRawKey(byte[] rawKey) {
+        this.rawKey = rawKey;
+    }
+
+    @Override
+    public String toString() {
+        return "XTrimCommand{" +
+                "key='" + key + '\'' +
+                ", maxLen=" + maxLen +
+                '}';
+    }
 }
