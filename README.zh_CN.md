@@ -59,14 +59,13 @@
 # 1. Redis-replicator  
 
 ## 1.1. 简介
-[![Join the chat at https://gitter.im/leonchen83/redis-replicator](https://badges.gitter.im/leonchen83/redis-replicator.svg)](https://gitter.im/leonchen83/redis-replicator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/leonchen83/redis-replicator.svg?branch=master)](https://travis-ci.org/leonchen83/redis-replicator)
 [![Coverage Status](https://coveralls.io/repos/github/leonchen83/redis-replicator/badge.svg?branch=master)](https://coveralls.io/github/leonchen83/redis-replicator?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.moilioncircle/redis-replicator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.moilioncircle/redis-replicator)
 [![Javadocs](http://www.javadoc.io/badge/com.moilioncircle/redis-replicator.svg)](http://www.javadoc.io/doc/com.moilioncircle/redis-replicator)
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg?maxAge=2592000)](https://github.com/leonchen83/redis-replicator/blob/master/LICENSE)  
   
-Redis Replicator是一款RDB解析以及AOF解析的工具. 此工具完整实现了Redis Replication协议. 支持SYNC, PSYNC, PSYNC2等三种同步命令. 还支持远程RDB文件备份以及数据同步等功能. 此文中提到的 `命令` 特指Redis中的写(比如 `set`,`hmset`)命令，不包括读命令(比如 `get`,`hmget`)  
+Redis Replicator是一款RDB解析以及AOF解析的工具. 此工具完整实现了Redis Replication协议. 支持SYNC, PSYNC, PSYNC2等三种同步命令. 还支持远程RDB文件备份以及数据同步等功能. 此文中提到的 `命令` 特指Redis中的写(比如 `set`,`hmset`)命令，不包括读命令(比如 `get`,`hmget`), 支持的redis版本范围从2.6到5.0-rc1  
 
 ## 1.2. QQ讨论组  
   
@@ -85,7 +84,7 @@ Redis Replicator是一款RDB解析以及AOF解析的工具. 此工具完整实�
 ## 2.1. 安装前置条件  
 jdk 1.7+  
 maven-3.3.1+(支持 [toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html))  
-redis 2.6 - 4.0.x  
+redis 2.6 - 5.0-rc1  
 
 ## 2.2. Maven依赖  
 ```xml  
@@ -111,7 +110,8 @@ redis 2.6 - 4.0.x
 
 |     **redis 版本**        |**redis-replicator 版本**  |  
 | ------------------------- | ------------------------- |  
-|  \[2.6, 4.0.x\]           |           \[2.3.0, \]     |  
+|  \[2.6, 5.0.x\]           |       \[2.6.0, \]         |  
+|  \[2.6, 4.0.x\]           |       \[2.3.0, 2.5.0\]    |  
 |  \[2.6, 4.0-RC3\]         |       \[2.1.0, 2.2.0\]    |  
 |  \[2.6, 3.2.x\]           |  \[1.0.18\](不再提供支持)   |  
 
@@ -450,7 +450,8 @@ Replicator replicator = new RedisReplicator("redis:///path/to/dump.rdb?rateLimit
 |**GEOADD**  | **PEXPIRE**  |**ZUNIONSTORE** |**EVAL**    |  **SCRIPT**  |**ZREMRANGEBYRANK** |  
 |**PUBLISH** |  **BITOP**   |**SETBIT**      | **SWAPDB** | **PFADD**    |**ZREMRANGEBYSCORE**|  
 |**RENAME**  |  **MULTI**   |  **EXEC**      | **LTRIM**  |**RPOPLPUSH** |     **SORT**       |  
-|**EVALSHA** |              |                |            |              |                    |  
+|**EVALSHA** | **ZPOPMAX**  | **ZPOPMIN**    | **XACK**   | **XADD**     |  **XCLAIM**        |  
+|**XDEL**    | **XGROUP**   | **XTRIM**      |            |              |                    |  
   
 ## 5.2. 当出现EOFException
   
@@ -539,7 +540,7 @@ Replicator replicator = new RedisReplicator("redis:///path/to/dump.rdb?rateLimit
   
 ## 5.8. 处理原始字节数组  
   
-* 除`KeyStringValueModule`以外的kv类型, 都可以得到原始的字节数组. 在某些情况(比如HyperLogLog)下会很有用.  
+* 除`KeyStringValueModule`以外的kv类型, 都可以得到原始的字节数组. 在某些情况下会很有用.  
   
 ```java  
         Replicator replicator = new RedisReplicator("redis://127.0.0.1:6379");
@@ -562,7 +563,7 @@ Replicator replicator = new RedisReplicator("redis:///path/to/dump.rdb?rateLimit
         replicator.open();
 ```  
   
-为了操作简便`KeyStringValueHash.getRawValue`返回的`Map<byte[], byte[]>`中的key可以当做[值类型](https://en.wikipedia.org/wiki/Value_type)存取  
+调用`KeyStringValueHash.getRawValue`返回的`Map<byte[], byte[]>`中的key可以当做[值类型](http://www.tutorialsteacher.com/csharp/csharp-value-type-and-reference-type)存取  
 
 ```java  
 KeyStringValueHash ksvh = (KeyStringValueHash) kv;
