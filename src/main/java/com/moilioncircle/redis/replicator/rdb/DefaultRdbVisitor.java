@@ -18,7 +18,6 @@ package com.moilioncircle.redis.replicator.rdb;
 
 import com.moilioncircle.redis.replicator.Replicator;
 import com.moilioncircle.redis.replicator.event.Event;
-import com.moilioncircle.redis.replicator.io.ByteArrayInputStream;
 import com.moilioncircle.redis.replicator.io.RedisInputStream;
 import com.moilioncircle.redis.replicator.rdb.datatype.AuxField;
 import com.moilioncircle.redis.replicator.rdb.datatype.DB;
@@ -34,7 +33,6 @@ import com.moilioncircle.redis.replicator.rdb.datatype.KeyValuePair;
 import com.moilioncircle.redis.replicator.rdb.datatype.Module;
 import com.moilioncircle.redis.replicator.rdb.datatype.ZSetEntry;
 import com.moilioncircle.redis.replicator.rdb.module.ModuleParser;
-import com.moilioncircle.redis.replicator.util.ByteArray;
 import com.moilioncircle.redis.replicator.util.ByteArrayMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -416,8 +414,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         BaseRdbParser parser = new BaseRdbParser(in);
         KeyStringValueHash o9 = new KeyStringValueHash();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        ByteArray aux = parser.rdbLoadPlainStringObject();
-        RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(aux));
+        RedisInputStream stream = new RedisInputStream(parser.rdbLoadPlainStringObject());
         Map<String, String> map = new LinkedHashMap<>();
         ByteArrayMap<byte[]> rawMap = new ByteArrayMap<>();
         BaseRdbParser.LenHelper.zmlen(stream); // zmlen
@@ -463,8 +460,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         BaseRdbParser parser = new BaseRdbParser(in);
         KeyStringValueList o10 = new KeyStringValueList();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        ByteArray aux = parser.rdbLoadPlainStringObject();
-        RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(aux));
+        RedisInputStream stream = new RedisInputStream(parser.rdbLoadPlainStringObject());
 
         List<String> list = new ArrayList<>();
         List<byte[]> rawList = new ArrayList<>();
@@ -498,8 +494,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         BaseRdbParser parser = new BaseRdbParser(in);
         KeyStringValueSet o11 = new KeyStringValueSet();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        ByteArray aux = parser.rdbLoadPlainStringObject();
-        RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(aux));
+        RedisInputStream stream = new RedisInputStream(parser.rdbLoadPlainStringObject());
 
         Set<String> set = new LinkedHashSet<>();
         Set<byte[]> rawSet = new LinkedHashSet<>();
@@ -544,8 +539,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         BaseRdbParser parser = new BaseRdbParser(in);
         KeyStringValueZSet o12 = new KeyStringValueZSet();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        ByteArray aux = parser.rdbLoadPlainStringObject();
-        RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(aux));
+        RedisInputStream stream = new RedisInputStream(parser.rdbLoadPlainStringObject());
 
         Set<ZSetEntry> zset = new LinkedHashSet<>();
         BaseRdbParser.LenHelper.zlbytes(stream); // zlbytes
@@ -579,8 +573,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         BaseRdbParser parser = new BaseRdbParser(in);
         KeyStringValueHash o13 = new KeyStringValueHash();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        ByteArray aux = parser.rdbLoadPlainStringObject();
-        RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(aux));
+        RedisInputStream stream = new RedisInputStream(parser.rdbLoadPlainStringObject());
 
         Map<String, String> map = new LinkedHashMap<>();
         ByteArrayMap<byte[]> rawMap = new ByteArrayMap<>();
@@ -617,8 +610,7 @@ public class DefaultRdbVisitor extends RdbVisitor {
         List<String> list = new ArrayList<>();
         List<byte[]> rawList = new ArrayList<>();
         for (int i = 0; i < len; i++) {
-            ByteArray element = parser.rdbGenericLoadStringObject(RDB_LOAD_NONE);
-            RedisInputStream stream = new RedisInputStream(new ByteArrayInputStream(element));
+            RedisInputStream stream = new RedisInputStream(parser.rdbGenericLoadStringObject(RDB_LOAD_NONE));
 
             BaseRdbParser.LenHelper.zlbytes(stream); // zlbytes
             BaseRdbParser.LenHelper.zltail(stream); // zltail
@@ -703,6 +695,14 @@ public class DefaultRdbVisitor extends RdbVisitor {
     }
 
     public Event applyStreamListPacks(RedisInputStream in, DB db, int version) throws IOException {
+        BaseRdbParser parser = new BaseRdbParser(in);
+        byte[] key = parser.rdbLoadEncodedStringObject().first();
+        long listpacks = parser.rdbLoadLen().len;
+        while (listpacks-- > 0) {
+            byte[] id = parser.rdbLoadPlainStringObject().first();
+            RedisInputStream lp = new RedisInputStream(parser.rdbLoadPlainStringObject());
+            // TODO
+        }
         throw new UnsupportedOperationException("must implement this method.");
     }
 
