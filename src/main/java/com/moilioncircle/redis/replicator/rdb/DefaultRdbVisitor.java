@@ -27,6 +27,7 @@ import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueHash;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueList;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueModule;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueSet;
+import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueStream;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueString;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueZSet;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyValuePair;
@@ -87,11 +88,11 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     @Override
     public String applyMagic(RedisInputStream in) throws IOException {
-        String magicString = BaseRdbParser.StringHelper.str(in, 5);//REDIS
-        if (!magicString.equals("REDIS")) {
-            throw new UnsupportedOperationException("can't read MAGIC STRING [REDIS] ,value:" + magicString);
+        String magic = BaseRdbParser.StringHelper.str(in, 5);//REDIS
+        if (!magic.equals("REDIS")) {
+            throw new UnsupportedOperationException("can't read MAGIC STRING [REDIS] ,value:" + magic);
         }
-        return magicString;
+        return magic;
     }
 
     @Override
@@ -697,17 +698,23 @@ public class DefaultRdbVisitor extends RdbVisitor {
 
     public Event applyStreamListPacks(RedisInputStream in, DB db, int version) throws IOException {
         BaseRdbParser parser = new BaseRdbParser(in);
+        KeyStringValueStream o15 = new KeyStringValueStream();
+        Stream stream = new Stream();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
         long listpacks = parser.rdbLoadLen().len;
         while (listpacks-- > 0) {
             RedisInputStream nodekey = new RedisInputStream(parser.rdbLoadPlainStringObject());
             Stream.ID id = new Stream.ID(nodekey.readLong(8, false), nodekey.readLong(8, false));
             RedisInputStream listpack = new RedisInputStream(parser.rdbLoadPlainStringObject());
-
-
             // TODO
         }
-        throw new UnsupportedOperationException("must implement this method.");
+
+        o15.setValueRdbType(RDB_TYPE_STREAM_LISTPACKS);
+        o15.setDb(db);
+        o15.setValue(stream);
+        o15.setKey(new String(key, UTF_8));
+        o15.setRawKey(key);
+        return o15;
     }
 
     protected KeyValuePair<?> rdbLoadObject(RedisInputStream in, DB db, int valueType, int version) throws IOException {

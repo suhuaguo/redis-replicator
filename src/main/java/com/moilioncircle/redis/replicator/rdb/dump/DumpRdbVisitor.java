@@ -44,6 +44,7 @@ import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_MODULE;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_MODULE_2;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_SET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_SET_INTSET;
+import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_STREAM_LISTPACKS;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_STRING;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_ZSET;
 import static com.moilioncircle.redis.replicator.Constants.RDB_TYPE_ZSET_2;
@@ -402,6 +403,23 @@ public class DumpRdbVisitor extends DefaultRdbVisitor {
         o7.setKey(new String(key, UTF_8));
         o7.setRawKey(key);
         return o7;
+    }
+
+    @Override
+    public Event applyStreamListPacks(RedisInputStream in, DB db, int version) throws IOException {
+        BaseRdbParser parser = new BaseRdbParser(in);
+        DumpKeyValuePair o15 = new DumpKeyValuePair();
+        byte[] key = parser.rdbLoadEncodedStringObject().first();
+        DefaultRawByteListener listener = new DefaultRawByteListener((byte) RDB_TYPE_STREAM_LISTPACKS, version);
+        replicator.addRawByteListener(listener);
+        // TODO
+        replicator.removeRawByteListener(listener);
+        o15.setValueRdbType(RDB_TYPE_STREAM_LISTPACKS);
+        o15.setValue(listener.getBytes());
+        o15.setDb(db);
+        o15.setKey(new String(key, UTF_8));
+        o15.setRawKey(key);
+        return o15;
     }
 
 }

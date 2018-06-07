@@ -169,6 +169,13 @@ public class KeyValuePair<T> implements Event {
         return (Module) value;
     }
 
+    /**
+     * @return RDB_TYPE_STREAM_LISTPACKS
+     */
+    public Stream getValueAsStream() {
+        return (Stream) value;
+    }
+
     @Override
     public String toString() {
         return "KeyValuePair{" +
