@@ -31,6 +31,7 @@ import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueString;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyStringValueZSet;
 import com.moilioncircle.redis.replicator.rdb.datatype.KeyValuePair;
 import com.moilioncircle.redis.replicator.rdb.datatype.Module;
+import com.moilioncircle.redis.replicator.rdb.datatype.Stream;
 import com.moilioncircle.redis.replicator.rdb.datatype.ZSetEntry;
 import com.moilioncircle.redis.replicator.rdb.module.ModuleParser;
 import com.moilioncircle.redis.replicator.util.ByteArrayMap;
@@ -699,8 +700,11 @@ public class DefaultRdbVisitor extends RdbVisitor {
         byte[] key = parser.rdbLoadEncodedStringObject().first();
         long listpacks = parser.rdbLoadLen().len;
         while (listpacks-- > 0) {
-            byte[] id = parser.rdbLoadPlainStringObject().first();
-            RedisInputStream lp = new RedisInputStream(parser.rdbLoadPlainStringObject());
+            RedisInputStream nodekey = new RedisInputStream(parser.rdbLoadPlainStringObject());
+            Stream.ID id = new Stream.ID(nodekey.readLong(8, false), nodekey.readLong(8, false));
+            RedisInputStream listpack = new RedisInputStream(parser.rdbLoadPlainStringObject());
+
+
             // TODO
         }
         throw new UnsupportedOperationException("must implement this method.");
