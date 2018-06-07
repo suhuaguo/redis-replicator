@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class Stream implements Serializable {
     private static final long serialVersionUID = 1L;
-    private ID last;
+    private ID lastId;
     private NavigableMap<ID, Entry> entries;
     private List<Group> groups;
 
@@ -37,12 +37,18 @@ public class Stream implements Serializable {
 
     }
 
-    public ID getLast() {
-        return last;
+    public Stream(ID lastId, NavigableMap<ID, Entry> entries, List<Group> groups) {
+        this.lastId = lastId;
+        this.entries = entries;
+        this.groups = groups;
     }
 
-    public void setLast(ID last) {
-        this.last = last;
+    public ID getLastId() {
+        return lastId;
+    }
+
+    public void setLastId(ID lastId) {
+        this.lastId = lastId;
     }
 
     public NavigableMap<ID, Entry> getEntries() {
@@ -69,6 +75,16 @@ public class Stream implements Serializable {
 
         public Entry() {
 
+        }
+
+        public Entry(ID id, Map<String, String> fields) {
+            this(id, fields, null);
+        }
+
+        public Entry(ID id, Map<String, String> fields, Map<byte[], byte[]> rawFields) {
+            this.id = id;
+            this.fields = fields;
+            this.rawFields = rawFields;
         }
 
         public ID getId() {
@@ -100,12 +116,24 @@ public class Stream implements Serializable {
         private static final long serialVersionUID = 1L;
         private String name;
         private ID id;
-        private Map<ID, Nack> globalPel;
+        private NavigableMap<ID, Nack> globalPendingEntryMap;
         private List<Consumer> consumers;
         private byte[] rawName;
 
         public Group() {
 
+        }
+
+        public Group(String name, ID id, NavigableMap<ID, Nack> globalPendingEntryMap, List<Consumer> consumers) {
+            this(name, id, globalPendingEntryMap, consumers, null);
+        }
+
+        public Group(String name, ID id, NavigableMap<ID, Nack> globalPendingEntryMap, List<Consumer> consumers, byte[] rawName) {
+            this.name = name;
+            this.id = id;
+            this.globalPendingEntryMap = globalPendingEntryMap;
+            this.consumers = consumers;
+            this.rawName = rawName;
         }
 
         public String getName() {
@@ -124,12 +152,12 @@ public class Stream implements Serializable {
             this.id = id;
         }
 
-        public Map<ID, Nack> getGlobalPel() {
-            return globalPel;
+        public NavigableMap<ID, Nack> getGlobalPendingEntryMap() {
+            return globalPendingEntryMap;
         }
 
-        public void setGlobalPel(Map<ID, Nack> globalPel) {
-            this.globalPel = globalPel;
+        public void setGlobalPendingEntryMap(NavigableMap<ID, Nack> globalPendingEntryMap) {
+            this.globalPendingEntryMap = globalPendingEntryMap;
         }
 
         public List<Consumer> getConsumers() {
@@ -153,11 +181,22 @@ public class Stream implements Serializable {
         private static final long serialVersionUID = 1L;
         private String name;
         private long seenTime;
-        private Map<ID, Nack> pel;
+        private NavigableMap<ID, Nack> pendingEntryMap;
         private byte[] rawName;
 
         public Consumer() {
 
+        }
+
+        public Consumer(String name, long seenTime, NavigableMap<ID, Nack> pendingEntryMap) {
+            this(name, seenTime, pendingEntryMap, null);
+        }
+
+        public Consumer(String name, long seenTime, NavigableMap<ID, Nack> pendingEntryMap, byte[] rawName) {
+            this.name = name;
+            this.seenTime = seenTime;
+            this.pendingEntryMap = pendingEntryMap;
+            this.rawName = rawName;
         }
 
         public String getName() {
@@ -176,12 +215,12 @@ public class Stream implements Serializable {
             this.seenTime = seenTime;
         }
 
-        public Map<ID, Nack> getPel() {
-            return pel;
+        public NavigableMap<ID, Nack> getPendingEntryMap() {
+            return pendingEntryMap;
         }
 
-        public void setPel(Map<ID, Nack> pel) {
-            this.pel = pel;
+        public void setPendingEntryMap(NavigableMap<ID, Nack> pendingEntryMap) {
+            this.pendingEntryMap = pendingEntryMap;
         }
 
         public byte[] getRawName() {
@@ -202,6 +241,13 @@ public class Stream implements Serializable {
 
         public Nack() {
 
+        }
+
+        public Nack(ID id, Consumer consumer, long deliveryTime, long deliveryCount) {
+            this.id = id;
+            this.consumer = consumer;
+            this.deliveryTime = deliveryTime;
+            this.deliveryCount = deliveryCount;
         }
 
         public ID getId() {

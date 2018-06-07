@@ -288,10 +288,11 @@ public class DefaultRdbVisitor extends RdbVisitor {
         long len = parser.rdbLoadLen().len;
         List<String> list = new ArrayList<>();
         List<byte[]> rawList = new ArrayList<>();
-        for (int i = 0; i < len; i++) {
+        while (len > 0) {
             byte[] element = parser.rdbLoadEncodedStringObject().first();
             list.add(new String(element, UTF_8));
             rawList.add(element);
+            len--;
         }
         o1.setValueRdbType(RDB_TYPE_LIST);
         o1.setValue(list);
@@ -314,10 +315,11 @@ public class DefaultRdbVisitor extends RdbVisitor {
         long len = parser.rdbLoadLen().len;
         Set<String> set = new LinkedHashSet<>();
         Set<byte[]> rawSet = new LinkedHashSet<>();
-        for (int i = 0; i < len; i++) {
+        while (len > 0) {
             byte[] element = parser.rdbLoadEncodedStringObject().first();
             set.add(new String(element, UTF_8));
             rawSet.add(element);
+            len--;
         }
         o2.setValueRdbType(RDB_TYPE_SET);
         o2.setValue(set);
@@ -701,8 +703,8 @@ public class DefaultRdbVisitor extends RdbVisitor {
         KeyStringValueStream o15 = new KeyStringValueStream();
         Stream stream = new Stream();
         byte[] key = parser.rdbLoadEncodedStringObject().first();
-        long listpacks = parser.rdbLoadLen().len;
-        while (listpacks-- > 0) {
+        long listPacks = parser.rdbLoadLen().len;
+        while (listPacks-- > 0) {
             RedisInputStream nodekey = new RedisInputStream(parser.rdbLoadPlainStringObject());
             Stream.ID id = new Stream.ID(nodekey.readLong(8, false), nodekey.readLong(8, false));
             RedisInputStream listpack = new RedisInputStream(parser.rdbLoadPlainStringObject());

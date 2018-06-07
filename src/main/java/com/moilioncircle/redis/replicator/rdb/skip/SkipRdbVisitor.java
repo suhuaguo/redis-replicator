@@ -132,8 +132,9 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         SkipRdbParser parser = new SkipRdbParser(in);
         parser.rdbLoadEncodedStringObject();
         long len = parser.rdbLoadLen().len;
-        for (int i = 0; i < len; i++) {
+        while (len > 0) {
             parser.rdbLoadEncodedStringObject();
+            len--;
         }
         return null;
     }
@@ -143,8 +144,9 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
         SkipRdbParser parser = new SkipRdbParser(in);
         parser.rdbLoadEncodedStringObject();
         long len = parser.rdbLoadLen().len;
-        for (int i = 0; i < len; i++) {
+        while (len > 0) {
             parser.rdbLoadEncodedStringObject();
+            len--;
         }
         return null;
     }
@@ -283,7 +285,37 @@ public class SkipRdbVisitor extends DefaultRdbVisitor {
 
     @Override
     public Event applyStreamListPacks(RedisInputStream in, DB db, int version) throws IOException {
-        // TODO
+        SkipRdbParser parser = new SkipRdbParser(in);
+        parser.rdbLoadEncodedStringObject();
+        long listPacks = parser.rdbLoadLen().len;
+        while (listPacks-- > 0) {
+            parser.rdbLoadPlainStringObject();
+            parser.rdbLoadPlainStringObject();
+        }
+        parser.rdbLoadLen();
+        parser.rdbLoadLen();
+        parser.rdbLoadLen();
+        long groupCount = parser.rdbLoadLen().len;
+        while (groupCount-- > 0) {
+            parser.rdbLoadPlainStringObject();
+            parser.rdbLoadLen();
+            parser.rdbLoadLen();
+            long globalPel = parser.rdbLoadLen().len;
+            while (globalPel-- > 0) {
+                parser.rdbLoadLen();
+                parser.rdbLoadMillisecondTime();
+                parser.rdbLoadLen();
+            }
+            long consumerCount = parser.rdbLoadLen().len;
+            while (consumerCount-- > 0) {
+                parser.rdbLoadPlainStringObject();
+                parser.rdbLoadMillisecondTime();
+                long pel = parser.rdbLoadLen().len;
+                while (pel-- > 0) {
+                    parser.rdbLoadLen();
+                }
+            }
+        }
         return null;
     }
 }
